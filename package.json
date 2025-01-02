@@ -1,0 +1,23 @@
+{
+	"version": "0.1.0",
+	"description": "A class-based virtual dom structure allowing for dom manipulation in nodejs",
+	"main": "index.js",
+	"scripts": {
+		"dev": "clear && node sandbox.js",
+		"test": "clear && node --test test.js",
+		"start": "clear && node index.js"
+	},
+	"keywords": [
+		"dom",
+		"vdom",
+		"virtual"
+	],
+	"author": "Jacob Lockett",
+	"license": "MIT",
+	"name": "virty",
+	"type": "module",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/jacoblockett/virty"
+	}
+}
