@@ -21,6 +21,7 @@ export default class Node {
 	#next
 	#parent
 	#previous
+	#selfClosing
 	#tagName
 	#type
 	#value
@@ -34,6 +35,7 @@ export default class Node {
 	 * @param {{[name: string]: string|number|boolean}} [init.attributes] (Optional) Attributes to use with `"element"` nodes. Attribute keys are case-sensitive. `"comment"` and `"text"` nodes will ignore this option
 	 * @param {Node[]} [init.children] (Optional) Children to immediately populate the node with. `"comment"` and `"text"` nodes will ignore this option
 	 * @param {string} [init.value] (Optional) The text to use for `"comment"` and `"text"` nodes. This is not the same as the `value` attribute. To set that, use the `init.attributes` option. `"element"` nodes will ignore this option
+	 * @param {boolean} [init.selfClosing] (Optional) Whether the node is a self-closing tag or not. `"comment"` and `"text"` nodes will ignore this option
 	 */
 	constructor(init = {}) {
 		if (Object.prototype.toString.call(init) !== "[object Object]")
@@ -61,7 +63,15 @@ export default class Node {
 			this.#attributes = init.attributes
 			this.#children = []
 
-			if (Array.isArray(init.children) && init.children.length) this.appendChild(init.children)
+			if (typeof init.selfClosing !== "boolean") init.selfClosing = false
+
+			this.#selfClosing = init.selfClosing
+
+			if (Array.isArray(init.children) && init.children.length) {
+				if (init.selfClosing) throw new Error("Self-closing nodes cannot have children")
+
+				this.appendChild(init.children)
+			}
 		} else if (init.type === COMMENT) {
 			if (typeof init.value !== "string") init.value = ""
 			else init.value = init.value.trim()
@@ -246,6 +256,15 @@ export default class Node {
 	}
 
 	/**
+	 * Whether or not the node is self-closing. `"comment"` and `"text"` nodes do not have a selfClosing member.
+	 *
+	 * @returns {boolean|undefined}
+	 */
+	get selfClosing() {
+		return this.#selfClosing
+	}
+
+	/**
 	 * The tag name of the node. `"comment"` and `"text"` nodes do not have a tagName member.
 	 *
 	 * @returns {string|undefined}
@@ -370,5 +389,69 @@ export default class Node {
 		this.#children = remaining
 
 		return this
+	}
+
+	/**
+	 * Renders the current node and all of its children into a string.
+	 *
+	 * @param {object} [options]
+	 * @param {string} [indentChar] The character to use for indentation (default: `""`)
+	 * @param {number} [indentSize] The number of times to use the indentation character (default: `0`)
+	 * @param {number} [printWidth] The maximum visual column size to print before wrapping to the next line (default: `100`) ⚠️ Planned, but not implemented
+	 * @returns {string}
+	 */
+	toString(options = {}) {
+		if (Object.prototype.toString.call(options) !== "[object Object]") options = {}
+		if (typeof options.indentChar !== "string") options.indentChar = ""
+		if (typeof options.indentSize !== "number" || !Number.isInteger(options.indentSize)) options.indentSize = 0
+
+		let str = ""
+		let q = [{ node: this, depth: 0 }]
+
+		while (q.length) {
+			const { node, depth, requeued } = q.shift()
+			const indent =
+				depth && options.indentSize && options.indentChar
+					? `${options.indentChar}`.repeat(depth * options.indentSize)
+					: ""
+
+			if (node.type === ELEMENT) {
+				const newline = options.indentSize ? "\n" : ""
+
+				if (requeued) {
+					// handle closing tag
+					str += `${indent}</${node.tagName}>${newline}`
+					continue
+				}
+
+				// handle opening tag
+				const a = `${Object.entries(node.attributes).reduce((p, [k, v]) => `${p} ${k}="${v}"`, "")}`
+				str += `${indent}<${node.tagName}${a}${node.selfClosing ? " /" : ""}>${
+					node.children.length || node.selfClosing ? newline : ""
+				}`
+
+				if (node.selfClosing) continue
+
+				// handle nested children
+				if (node.children.length && !requeued) {
+					const children = node.children.map(c => ({ node: c, depth: depth + 1 }))
+
+					q.unshift(...children, { node, depth, requeued: true })
+					continue
+				}
+
+				// handle closing tag
+				str += `${node.children.length ? indent : ""}</${node.tagName}>${newline}`
+				continue
+			} else if (node.type === TEXT) {
+				str += `${indent}${node.value}${options.indentSize ? "\n" : ""}`
+				continue
+			} else if (node.type === COMMENT) {
+				str += `${indent}${node.value}${options.indentSize ? "\n" : ""}`
+				continue
+			}
+		}
+
+		return str
 	}
 }
