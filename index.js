@@ -215,6 +215,26 @@ export default class Node {
 	}
 
 	/**
+	 * The first child of this node's children. `"comment"` and `"text"` nodes do not have a children member, and therefore
+	 * do not have a firstChild member.
+	 *
+	 * @returns {Node|undefined}
+	 */
+	get firstChild() {
+		return this.#children?.[0]
+	}
+
+	/**
+	 * The last child of this node's children. `"comment"` and `"text"` nodes do not have a children member, and therefore
+	 * do not have a lastChild member.
+	 *
+	 * @returns {Node|undefined}
+	 */
+	get lastChild() {
+		return this.#children ? this.#children[this.children.length - 1] : undefined
+	}
+
+	/**
 	 * The next sibling node.
 	 *
 	 * @returns {Node|undefined}
@@ -271,6 +291,48 @@ export default class Node {
 	 */
 	get tagName() {
 		return this.#tagName
+	}
+
+	/**
+	 * Concatenates and returns all of the child `"text"` nodes of this node. If this node is a `"text"` node,
+	 * this member is equivalent to `get Node.prototype.value()`.
+	 *
+	 * ⚠️ This is different from a browser web API's `.textContent` in that this simply concatenates all text nodes,
+	 * whereas `.textContent` takes into account formatting whitespace of the document. See {@link https://github.com/jacoblockett/virty#nodeprototypetext- documentation}
+	 * for examples showcasing why this distinction matters.
+	 *
+	 * @returns {string}
+	 */
+	get text() {
+		if (this.#type === TEXT) return this.#value
+		if (this.#type === COMMENT) return ""
+
+		let result = ""
+
+		const stack = [{ node: this, remainingChildren: [...this.#children] }]
+
+		while (stack.length) {
+			const { node, remainingChildren } = stack.shift()
+
+			if (node.type === TEXT) {
+				result = `${result}${node.value}`
+				continue
+			}
+
+			while (remainingChildren.length) {
+				const child = remainingChildren.shift()
+
+				if (child.children?.length) {
+					if (remainingChildren.length) stack.unshift({ node, remainingChildren })
+
+					stack.unshift({ node: child, remainingChildren: [...child.children] })
+				} else if (child.type === TEXT) {
+					result = `${result}${child.value}`
+				}
+			}
+		}
+
+		return result
 	}
 
 	/**
