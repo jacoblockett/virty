@@ -3,6 +3,8 @@
 // whereas in reality that's obviously disallowed. Validation is out of scope for this library and should be
 // handled in the calling library.
 
+import isWhitespace from "./utils/isWhitespace"
+
 // TODO: Replace "PKG" with the actual package name whenever you think of one.
 
 const getChildren = Symbol("getChildren")
@@ -27,7 +29,7 @@ export default class Node {
 	#value
 
 	/**
-	 * Creates a new Node - a representation similar to that of a DOM node.
+	 * Creates a new Node - a representation of HTML/XML similar to that of a DOM node.
 	 *
 	 * @param {object} init (Required)
 	 * @param {"comment"|"element"|"text"} init.type (Required) Case-*in*sensitive type of the node
@@ -457,9 +459,9 @@ export default class Node {
 	 * Renders the current node and all of its children into a string.
 	 *
 	 * @param {object} [options]
-	 * @param {string} [indentChar] The character to use for indentation (default: `""`)
-	 * @param {number} [indentSize] The number of times to use the indentation character (default: `0`)
-	 * @param {number} [printWidth] The maximum visual column size to print before wrapping to the next line (default: `100`) ⚠️ Planned, but not implemented
+	 * @param {string} [options.indentChar] The character to use for indentation (default: `""`)
+	 * @param {number} [options.indentSize] The number of times to use the indentation character (default: `0`)
+	 * @param {number} [options.printWidth] The maximum visual column size to print before wrapping to the next line (default: `100`) ⚠️ Planned, but not implemented
 	 * @returns {string}
 	 */
 	toString(options = {}) {
@@ -515,5 +517,49 @@ export default class Node {
 		}
 
 		return str
+	}
+
+	query(queryString) {
+		if (typeof queryString !== "string") throw new TypeError("Expected 'queryString' to be a string")
+		if (!queryString.length) return undefined
+
+		// [attrName] (matches nodes that have the given attribute name)
+		// [attrName: attrValue] (matches nodes that have the given attribute name with the given attribute value)
+		// [attrName1|attrName2] (matches nodes that have one of the given attribute names)
+		// [attrName1&attrName2] (matches nodes that have both of the given attribute names)
+		// [attrName: attrValue1|attrValue2] (matches nodes that have the given attribute name with one of the given attribute values)
+		// [attrName: attrValue1&attrValue2] (matches nodes that have the given attribute name with both of the given attribute values)
+		// [:attrValue] (matches nodes that have any attribute with the given attribute value)
+		// [an{op?}?:?av{op?}?] (matches attribute name with optional operators "&" and "|" that have a matching attribute value with optional operators "&" and "|")
+		// ex. [class:"a"|"b"] - matches a node with the attribute "class" that fully matches its value as either "a" or "b"
+		// ex. [data-value|value:"username"] - matches a node with either an attribute "data-value" or "value" that has the value "username"
+		// ex. [:true] - matches any node with a boolean attribute
+		// ex. [data-toggle] - matches any node with a data-toggle attribute regardless of its value
+		// ex. [a|b&c] - matches any node with either an attribute called "a", or a node with both a "b" and a "c" attribute, regardless of value
+
+		// Characters
+		// const DQ = '"'
+		// const SQ = "'"
+		// const OB = "["
+		// const CB = "]"
+
+		// Gates
+		const TAG_NAME = "tag name"
+		const ATT_NAME = "attribute name"
+		const ATT_VALU = "attribute value"
+
+		const selectors = []
+		let qbuf = {}
+		let buf = ""
+		let gate
+		let suspect
+		let context
+
+		for (const char of queryString) {
+			// need to define the full workings of my query language first, and only then can I actually make a parser
+			// either that, or just do css selectors...
+
+			buf = `${char}${buf}`
+		}
 	}
 }
