@@ -1,4 +1,4 @@
-import Node, { COMMENT, ELEMENT, TEXT } from "./index.js"
+import Node, { COMMENT, ELEMENT, TEXT } from "../index.js"
 
 // const createComment = value => new Node({ type: COMMENT, value })
 // const createElement = (tagName, attributes, children, selfClosing) =>
@@ -18,6 +18,12 @@ import Node, { COMMENT, ELEMENT, TEXT } from "./index.js"
 
 // console.log(`"${doc.children[0].text}"`)
 
-const n = new Node({ type: ELEMENT, tagName: "div", attributes: { class: "a b c" } })
+const n = new Node({
+	type: ELEMENT,
+	tagName: "div",
+	attributes: { class: "a b c" }
+})
 
-n.query("he\"l'lo")
+n.toggleClass("b", "d")
+
+console.log(`"${n.attributes.class}"`)

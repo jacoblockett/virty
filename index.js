@@ -3,7 +3,7 @@
 // whereas in reality that's obviously disallowed. Validation is out of scope for this library and should be
 // handled in the calling library.
 
-import isWhitespace from "./utils/isWhitespace"
+import isWhitespace from "./utils/isWhitespace.js"
 
 // TODO: Replace "PKG" with the actual package name whenever you think of one.
 
@@ -227,6 +227,33 @@ export default class Node {
 	}
 
 	/**
+	 * Checks if the node is the child of another node.
+	 *
+	 * @returns {boolean}
+	 */
+	get isChild() {
+		return !!this.#parent
+	}
+
+	/**
+	 * Checks if the node has been disconnected by its family nodes.
+	 *
+	 * @returns {boolean}
+	 */
+	get isOrphan() {
+		//todo
+	}
+
+	/**
+	 * Checks if the node is a parent to another node.
+	 *
+	 * @returns {boolean}
+	 */
+	get isParent() {
+		return !!this.#children?.length
+	}
+
+	/**
 	 * The last child of this node's children. `"comment"` and `"text"` nodes do not have a children member, and therefore
 	 * do not have a lastChild member.
 	 *
@@ -358,6 +385,48 @@ export default class Node {
 	}
 
 	/**
+	 * Adds the given key/value pair as an attribute to the node. If the attribute already exists, it will be
+	 * overwritten.
+	 *
+	 * @param {string} key The attribute name
+	 * @param {string|boolean|number} value The attribute's value
+	 * @returns {Node} The instance itself for chaining
+	 */
+	addAttribute(key, value) {
+		if (typeof key !== "string" || !key.length) throw new TypeError("Expected 'key' to be a string with a length >= 1")
+		if (typeof value !== "string" && typeof value !== "boolean" && typeof value !== "number")
+			throw new TypeError("Expected 'value' to be a string|number|boolean")
+
+		this.#attributes[key] = value
+
+		return this
+	}
+
+	/**
+	 * Adds the given class name(s) from the node's class list. ⚠️ This method normalizes the spacing between classes.
+	 *
+	 * @param {...(string|string[])[]} className The class name(s) to add
+	 * @returns {Node} The instance itself for chaining
+	 */
+	addClass(...className) {
+		if (this.#type !== ELEMENT) return this
+		if (className.length === 1 && Array.isArray(className[0])) className = className[0]
+		if (!this.#attributes?.class) this.#attributes.class = ""
+
+		const split = this.#attributes.class.trim().split(/\s+/)
+
+		for (let i = 0; i < className.length; i++) {
+			if (typeof className[i] !== "string") throw new TypeError(`Expected each 'className' to be a string`)
+
+			split.push(className[i].trim())
+		}
+
+		this.#attributes.class = [...new Set(split)].join(" ")
+
+		return this
+	}
+
+	/**
 	 * Appends the given child or children to the node. You can pass multiple nodes as arguments or an array of nodes.
 	 * Appended children will lose any and all parent and sibling references should they already exist. Nodes of type
 	 * "comment" and "text" will do nothing.
@@ -424,6 +493,106 @@ export default class Node {
 	}
 
 	/**
+	 * Checks if the node is a child of the given node.
+	 *
+	 * @returns {boolean}
+	 */
+	isChildOf(node) {
+		return this.#parent === node
+	}
+
+	/**
+	 * Checks if the node is a parent to the given node.
+	 *
+	 * @returns {boolean}
+	 */
+	isParentOf(node) {
+		return this.#children ? this.#children.includes(node) : false
+	}
+
+	/**
+	 * Prepends the given child or children to the node. You can pass multiple nodes as arguments or an array of nodes.
+	 * Prepended children will lose any and all parent and sibling references should they already exist. Nodes of type
+	 * "comment" and "text" will do nothing.
+	 *
+	 * @param {...Node|Node[]} nodes The child or children to prepend
+	 * @returns {Node} The instance itself for chaining
+	 */
+	prependChild(...nodes) {
+		if (this.#type !== ELEMENT) return this
+		if (nodes.length === 1 && Array.isArray(nodes[0])) nodes = nodes[0]
+
+		let p = this.#children[this.#children.length - 1]
+
+		for (let c of nodes) {
+			if (!(c instanceof Node)) throw new TypeError("Expected '...nodes' to only contain Nodes")
+			if (c.parent) c.parent.removeChild(c)
+
+			c[setParent](this)
+
+			if (p instanceof Node) {
+				p[setNext](c)
+				c[setPrevious](p)
+			}
+
+			this.#children.unshift(c)
+			p = c
+		}
+
+		return this
+	}
+
+	/**
+	 * Prepends the given sibling or siblings to the node. You can pass multiple nodes as arguments or an array of nodes.
+	 * Prepended siblings will lose any and all parent and sibling references should they already exist.
+	 *
+	 * @param {...Node|Node[]} nodes The sibling or siblings to prepend
+	 * @returns {Node} The instance itself for chaining
+	 */
+	prependSibling(...nodes) {
+		if (nodes.length === 1 && Array.isArray(nodes[0])) nodes = nodes[0]
+		if (!this.#parent) throw new Error("Cannot prepend a siblings to nodes without a parent (root nodes)")
+
+		const p = this.#parent
+		const pc = p[getChildren]()
+
+		if (pc[pc.length - 1] === this) {
+			this.#parent.appendChild(...nodes)
+			return this
+		}
+
+		pc.splice(pc.indexOf(this), 0, ...nodes)
+
+		for (let i = 0; i < pc.length; i++) {
+			const c = pc[i]
+
+			if (!(c instanceof Node)) throw new TypeError("Expected ...nodes to only contain Nodes")
+
+			c[setParent](p)
+			c[setPrevious](pc[i - 1])
+			c[setNext](pc[i + 1])
+		}
+
+		return this
+	}
+
+	/**
+	 * Removes the given key/value pair as an attribute to the node. If the attribute does not alreayd exist this
+	 * method will do nothing.
+	 *
+	 * @param {string} key The attribute name
+	 * @returns {Node} The instance itself for chaining
+	 */
+	removeAttribute(key) {
+		if (this.#type !== ELEMENT) return this
+		if (typeof key !== "string" || !key.length) throw new TypeError("Expected 'key' to be a string with a length >= 1")
+
+		delete this.#attributes[key]
+
+		return this
+	}
+
+	/**
 	 * Removes the given child or children from the node. You can pass multiple nodes as arguments or an array of
 	 * nodes. Nodes of type "comment" and "text", and nodes with no children, will do nothing.
 	 *
@@ -453,6 +622,62 @@ export default class Node {
 		this.#children = remaining
 
 		return this
+	}
+
+	/**
+	 * Removes the given class name(s) from the node's class list. ⚠️ This method normalizes the spacing between classes.
+	 *
+	 * @param {...(string|string[])[]} className The class name(s) to remove
+	 * @returns {Node} The instance itself for chaining
+	 */
+	removeClass(...className) {
+		if (this.#type !== ELEMENT) return this
+		if (className.length === 1 && Array.isArray(className[0])) className = className[0]
+		if (!this.#attributes?.class) return this
+
+		this.#attributes.class = this.#attributes.class
+			.trim()
+			.split(/\s+/)
+			.filter(cn => {
+				if (typeof cn !== "string") throw new TypeError("Expected each 'className' to be a string")
+
+				return !className.includes(cn)
+			})
+			.join(" ")
+
+		return this
+	}
+
+	/**
+	 * Toggles the class name(s) within the node's class list.
+	 *
+	 * @param {...(string|string[])[]} className The class name(s) to toggle
+	 * @returns {Node} The instance itself for chaining
+	 */
+	toggleClass(...className) {
+		if (className.length === 1 && Array.isArray(className[0])) className = className[0]
+
+		className = [...new Set(className.map(cn => cn.trim()))]
+
+		if (!this.#attributes?.class) this.#attributes.class = ""
+
+		const classList = this.#attributes.class
+			.trim()
+			.split(/\s+/)
+			.reduce((p, c) => {
+				p[c] = true
+				return p
+			}, {})
+
+		for (const cn of className) {
+			if (classList[cn]) {
+				delete classList[cn]
+			} else {
+				classList[cn] = true
+			}
+		}
+
+		this.#attributes.class = Object.keys(classList).join(" ")
 	}
 
 	/**
