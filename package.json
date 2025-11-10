@@ -3,7 +3,7 @@
 	"description": "A class-based virtual dom structure allowing for dom manipulation in nodejs",
 	"main": "index.js",
 	"scripts": {
-		"dev": "clear && node dev sandbox.js",
+		"dev": "clear && node dev/sandbox.js",
 		"test": "clear && node --test test.js",
 		"start": "clear && node index.js"
 	},
