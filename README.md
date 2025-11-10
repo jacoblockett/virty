@@ -1,6 +1,7 @@
 # Virty
 
 > ⚠️ This library is in its early stages of development. Expect bugs, and expect them to be plentiful. Until a v1.0.0 release, this message will persist.
+
 > ⚠️ Recently many methods and getters were added to the main Node class, but time is short and I haven't documented them in the README yet. Everything is JSDoc documented, so you're encouraged to install and review the source code for documentation until I get around to the README.
 
 A class-based virtual dom structure intended to be as brain-dead as possible to use.
