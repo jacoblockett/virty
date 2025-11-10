@@ -14,7 +14,7 @@ export const COMMENT = "comment"
 export const ELEMENT = "element"
 export const TEXT = "text"
 
-export default class Node {
+export class Node {
 	#attributes
 	#children
 	#connections // just an idea to be able to connect two nodes to each other so that what happens to one happens to the other as well
