@@ -1,11 +1,16 @@
 {
 	"version": "0.1.0",
-	"description": "A class-based virtual dom structure allowing for dom manipulation in nodejs",
-	"main": "index.js",
+	"description": "A class-based virtual DOM structure allowing for DOM manipulation in nodejs",
+	"main": "dist/index.cjs",
+	"module": "index.js",
+	"exports": {
+		"require": "./dist/index.cjs",
+		"import": "./index.js"
+	},
 	"scripts": {
 		"dev": "clear && node dev/sandbox.js",
-		"test": "clear && node --test test.js",
-		"start": "clear && node index.js"
+		"test": "node --test test.js",
+		"build": "rollup -c"
 	},
 	"keywords": [
 		"dom",
@@ -22,5 +27,10 @@
 	},
 	"dependencies": {
 		"string-width": "^7.2.0"
+	},
+	"devDependencies": {
+		"@rollup/plugin-commonjs": "^29.0.0",
+		"@rollup/plugin-node-resolve": "^16.0.3",
+		"rollup": "^4.53.2"
 	}
 }
