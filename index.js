@@ -5,8 +5,6 @@
 
 import isWhitespace from "./utils/isWhitespace"
 
-// TODO: Replace "PKG" with the actual package name whenever you think of one.
-
 const getChildren = Symbol("getChildren")
 const setNext = Symbol("setNext")
 const setParent = Symbol("setParent")
@@ -23,7 +21,7 @@ export default class Node {
 	#next
 	#parent
 	#previous
-	#selfClosing
+	#isSelfClosing
 	#tagName
 	#type
 	#value
@@ -37,7 +35,7 @@ export default class Node {
 	 * @param {{[name: string]: string|number|boolean}} [init.attributes] (Optional) Attributes to use with `"element"` nodes. Attribute keys are case-sensitive. `"comment"` and `"text"` nodes will ignore this option
 	 * @param {Node[]} [init.children] (Optional) Children to immediately populate the node with. `"comment"` and `"text"` nodes will ignore this option
 	 * @param {string} [init.value] (Optional) The text to use for `"comment"` and `"text"` nodes. This is not the same as the `value` attribute. To set that, use the `init.attributes` option. `"element"` nodes will ignore this option
-	 * @param {boolean} [init.selfClosing] (Optional) Whether the node is a self-closing tag or not. `"comment"` and `"text"` nodes will ignore this option
+	 * @param {boolean} [init.isSelfClosing] (Optional) Whether the node is a self-closing tag or not. `"comment"` and `"text"` nodes will ignore this option
 	 */
 	constructor(init = {}) {
 		if (Object.prototype.toString.call(init) !== "[object Object]")
@@ -65,12 +63,12 @@ export default class Node {
 			this.#attributes = init.attributes
 			this.#children = []
 
-			if (typeof init.selfClosing !== "boolean") init.selfClosing = false
+			if (typeof init.isSelfClosing !== "boolean") init.isSelfClosing = false
 
-			this.#selfClosing = init.selfClosing
+			this.#isSelfClosing = init.isSelfClosing
 
 			if (Array.isArray(init.children) && init.children.length) {
-				if (init.selfClosing) throw new Error("Self-closing nodes cannot have children")
+				if (init.isSelfClosing) throw new Error("Self-closing nodes cannot have children")
 
 				this.appendChild(init.children)
 			}
@@ -278,12 +276,12 @@ export default class Node {
 	}
 
 	/**
-	 * Whether or not the node is self-closing. `"comment"` and `"text"` nodes do not have a selfClosing member.
+	 * Whether or not the node is self-closing. `"comment"` and `"text"` nodes do not have a isSelfClosing member.
 	 *
 	 * @returns {boolean|undefined}
 	 */
-	get selfClosing() {
-		return this.#selfClosing
+	get isSelfClosing() {
+		return this.#isSelfClosing
 	}
 
 	/**
@@ -490,11 +488,11 @@ export default class Node {
 
 				// handle opening tag
 				const a = `${Object.entries(node.attributes).reduce((p, [k, v]) => `${p} ${k}="${v}"`, "")}`
-				str += `${indent}<${node.tagName}${a}${node.selfClosing ? " /" : ""}>${
-					node.children.length || node.selfClosing ? newline : ""
+				str += `${indent}<${node.tagName}${a}${node.isSelfClosing ? " /" : ""}>${
+					node.children.length || node.isSelfClosing ? newline : ""
 				}`
 
-				if (node.selfClosing) continue
+				if (node.isSelfClosing) continue
 
 				// handle nested children
 				if (node.children.length && !requeued) {
