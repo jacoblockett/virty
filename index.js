@@ -3,7 +3,7 @@
 // whereas in reality that's obviously disallowed. Validation is out of scope for this library and should be
 // handled in the calling library.
 
-import isWhitespace from "./utils/isWhitespace"
+// import isWhitespace from "./utils/isWhitespace"
 
 const getChildren = Symbol("getChildren")
 const setNext = Symbol("setNext")
@@ -202,7 +202,7 @@ export default class Node {
 	 * @returns {{[name: string]: string|number|boolean}|undefined}
 	 */
 	get attributes() {
-		return this.#attributes ? Object.freeze({ ...this.#attributes }) : undefined
+		return this.#attributes ? { ...this.#attributes } : undefined
 	}
 
 	/**
@@ -211,7 +211,7 @@ export default class Node {
 	 * @returns {Node[]|undefined}
 	 */
 	get children() {
-		return this.#children ? Object.freeze([...this.#children]) : undefined
+		return this.#children ? [...this.#children] : undefined
 	}
 
 	/**
@@ -222,6 +222,93 @@ export default class Node {
 	 */
 	get firstChild() {
 		return this.#children?.[0]
+	}
+
+	/**
+	 * Checks if the node is a child of another node.
+	 *
+	 * @returns {boolean}
+	 */
+	get isChild() {
+		return !!this.#parent
+	}
+
+	/**
+	 * Checks if the node is the first child of another node.
+	 *
+	 * @returns {boolean}
+	 */
+	get isFirstChild() {
+		return this.#parent?.firstChild === this
+	}
+
+	/**
+	 * Checks if the node is a grandchild to another node.
+	 *
+	 * @returns {boolean}
+	 */
+	get isGrandchild() {
+		return !!this.#parent?.parent
+	}
+
+	/**
+	 * Checks if the node is a grandparent to another node.
+	 *
+	 * @returns {boolean}
+	 */
+	get isGrandparent() {
+		if (!this.#children?.length) return false
+
+		for (const child of this.#children) {
+			if (child.children?.length) return true
+		}
+
+		return false
+	}
+
+	/**
+	 * Checks if the node is the last child of another node.
+	 *
+	 * @returns {boolean}
+	 */
+	get isLastChild() {
+		return this.#parent?.lastChild === this
+	}
+
+	/**
+	 * Checks if the node is the only child of its parent.
+	 *
+	 * @returns {boolean}
+	 */
+	get isOnlyChild() {
+		return this.#parent?.children?.length === 1
+	}
+
+	/**
+	 * Checks if the node is a parent of another node.
+	 *
+	 * @returns {boolean}
+	 */
+	get isParent() {
+		return !!this.#children?.length
+	}
+
+	/**
+	 * Checks if the node is self-closing.
+	 *
+	 * @returns {boolean}
+	 */
+	get isSelfClosing() {
+		return !!this.#isSelfClosing
+	}
+
+	/**
+	 * Checks if the node is a sibling to another node.
+	 *
+	 * @returns {boolean}
+	 */
+	get isSibling() {
+		return this.#parent?.children?.length > 1
 	}
 
 	/**
@@ -273,15 +360,6 @@ export default class Node {
 			if (!qNode.parent) return qNode
 			qNode = qNode.parent
 		}
-	}
-
-	/**
-	 * Whether or not the node is self-closing. `"comment"` and `"text"` nodes do not have a isSelfClosing member.
-	 *
-	 * @returns {boolean|undefined}
-	 */
-	get isSelfClosing() {
-		return this.#isSelfClosing
 	}
 
 	/**
@@ -422,6 +500,33 @@ export default class Node {
 	}
 
 	/**
+	 * Checks if the attribute exists on the node.
+	 *
+	 * @param {string} attributeName
+	 * @returns {boolean}
+	 */
+	hasAttribute(attributeName) {
+		return Object.hasOwn(this.#attributes, attributeName)
+	}
+
+	/**
+	 * Gets the nth child from the node. Children are indexed by 1, not by 0.
+	 * Negative numbers will work from the last child to the first.
+	 *
+	 * @param {number} n The nth child to get
+	 * @returns {Node|undefined} The child, or undefined if it doesn't exist
+	 */
+	nthChild(n) {
+		if (!!this.#children) return undefined
+
+		const idx = n > 0 ? n - 1 : this.#children.length + n
+
+		if (idx < 0 || idx >= this.#children.length) return undefined
+
+		return this.#children[idx]
+	}
+
+	/**
 	 * Removes the given child or children from the node. You can pass multiple nodes as arguments or an array of
 	 * nodes. Nodes of type "comment" and "text", and nodes with no children, will do nothing.
 	 *
@@ -451,6 +556,23 @@ export default class Node {
 		this.#children = remaining
 
 		return this
+	}
+
+	/**
+	 * Converts the current node and all of its children into JavaScript objects.
+	 *
+	 * @returns {object}
+	 */
+	toObject() {
+		const object = {}
+
+		if (classInstance.type) object.type = classInstance.type
+		if (classInstance.tagName) object.tagName = classInstance.tagName
+		if (classInstance.value !== undefined) object.value = classInstance.value
+		if (Object.keys(classInstance.attributes || {}).length) object.attributes = classInstance.attributes
+		if (classInstance.children?.length) object.children = classInstance.children.map(this.toObject)
+
+		return object
 	}
 
 	/**
