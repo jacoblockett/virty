@@ -2,10 +2,10 @@
 	"version": "0.2.0",
 	"description": "A class-based virtual DOM structure allowing for DOM manipulation in nodejs",
 	"main": "dist/index.cjs",
-	"module": "index.js",
+	"module": "src/index.js",
 	"exports": {
 		"require": "./dist/index.cjs",
-		"import": "./index.js"
+		"import": "./src/index.js"
 	},
 	"scripts": {
 		"dev": "clear && node dev/sandbox.js",
