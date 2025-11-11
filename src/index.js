@@ -764,11 +764,11 @@ export class Node {
 	toObject() {
 		const object = {}
 
-		if (classInstance.type) object.type = classInstance.type
-		if (classInstance.tagName) object.tagName = classInstance.tagName
-		if (classInstance.value !== undefined) object.value = classInstance.value
-		if (Object.keys(classInstance.attributes || {}).length) object.attributes = classInstance.attributes
-		if (classInstance.children?.length) object.children = classInstance.children.map(this.toObject)
+		if (this.type) object.type = this.type
+		if (this.tagName) object.tagName = this.tagName
+		if (this.value !== undefined) object.value = this.value
+		if (Object.keys(this.attributes || {}).length) object.attributes = this.attributes
+		if (this.children?.length) object.children = this.children.map(child => child.toObject())
 
 		return object
 	}
