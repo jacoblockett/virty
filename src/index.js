@@ -45,8 +45,8 @@ export class Node {
 
 		init.type = init.type.toLowerCase()
 
-		if (init.type !== COMMENT && init.type !== ELEMENT && init.type !== TEXT)
-			throw new TypeError(`Expected 'init.type' to be one of "comment", "element", or "text"`)
+		if (init.type !== CDATA && init.type !== COMMENT && init.type !== ELEMENT && init.type !== TEXT)
+			throw new TypeError(`Expected 'init.type' to be one of "cdata", "comment", "element", or "text"`)
 
 		this.#type = init.type
 
