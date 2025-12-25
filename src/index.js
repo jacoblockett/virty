@@ -10,6 +10,7 @@ const setNext = Symbol("setNext")
 const setParent = Symbol("setParent")
 const setPrevious = Symbol("setPrevious")
 
+export const CDATA = "cdata"
 export const COMMENT = "comment"
 export const ELEMENT = "element"
 export const TEXT = "text"
@@ -30,12 +31,12 @@ export class Node {
 	 * Creates a new Node - a representation of HTML/XML similar to that of a DOM node.
 	 *
 	 * @param {object} init (Required)
-	 * @param {"comment"|"element"|"text"} init.type (Required) Case-*in*sensitive type of the node
-	 * @param {string} [init.tagName] (Optional) Case-sensitive tag name, e.g. `"img"` for `<img />`. `"comment"` and `"text"` nodes will ignore this option
-	 * @param {{[name: string]: string|number|boolean}} [init.attributes] (Optional) Attributes to use with `"element"` nodes. Attribute keys are case-sensitive. `"comment"` and `"text"` nodes will ignore this option
-	 * @param {Node[]} [init.children] (Optional) Children to immediately populate the node with. `"comment"` and `"text"` nodes will ignore this option
-	 * @param {string} [init.value] (Optional) The text to use for `"comment"` and `"text"` nodes. This is not the same as the `value` attribute. To set that, use the `init.attributes` option. `"element"` nodes will ignore this option
-	 * @param {boolean} [init.isSelfClosing] (Optional) Whether the node is a self-closing tag or not. `"comment"` and `"text"` nodes will ignore this option
+	 * @param {"cdata"|"comment"|"element"|"text"} init.type (Required) Case-*in*sensitive type of the node
+	 * @param {string} [init.tagName] (Optional) Case-sensitive tag name, e.g. `"img"` for `<img />`. `"cdata"`, `"comment"`, and `"text"` nodes will ignore this option
+	 * @param {{[name: string]: string|number|boolean}} [init.attributes] (Optional) Attributes to use with `"element"` nodes. Attribute keys are case-sensitive. `"cdata"`, `"comment"`, and `"text"` nodes will ignore this option
+	 * @param {Node[]} [init.children] (Optional) Children to immediately populate the node with. `"cdata"`, `"comment"`, and `"text"` nodes will ignore this option
+	 * @param {string} [init.value] (Optional) The text to use for `"cdata"`, `"comment"`, and `"text"` nodes. This is not the same as the `value` attribute. To set that, use the `init.attributes` option. `"element"` nodes will ignore this option
+	 * @param {boolean} [init.isSelfClosing] (Optional) Whether the node is a self-closing tag or not. `"cdata"`, `"comment"`, and `"text"` nodes will ignore this option
 	 */
 	constructor(init = {}) {
 		if (Object.prototype.toString.call(init) !== "[object Object]")
@@ -49,54 +50,74 @@ export class Node {
 
 		this.#type = init.type
 
-		if (init.type === ELEMENT) {
-			if (typeof init.tagName !== "string") init.tagName = ""
+		switch (init.type) {
+			case COMMENT:
+				if (typeof init.value !== "string") init.value = ""
+				else init.value = init.value.trim()
 
-			this.#tagName = init.tagName
+				const iv = init.value
+				const ivl = iv.length
 
-			if (Object.prototype.toString.call(init.attributes) !== "[object Object]") init.attributes = {}
+				if (
+					ivl &&
+					(iv[0] !== "<" ||
+						iv[1] !== "!" ||
+						iv[2] !== "-" ||
+						iv[3] !== "-" ||
+						iv[ivl - 3] !== "-" ||
+						iv[ivl - 2] !== "-" ||
+						iv[ivl - 1] !== ">")
+				)
+					init.value = `<!--${init.value}-->`
 
-			for (const [key, val] of Object.entries(init.attributes))
-				if (typeof val !== "string" && typeof val !== "number" && typeof val !== "boolean")
-					throw new TypeError(`Expected init.attributes.${key} to be string|number|boolean`)
+				this.#value = init.value
 
-			this.#attributes = init.attributes
-			this.#children = []
+				break
+			case ELEMENT:
+				if (typeof init.tagName !== "string") init.tagName = ""
 
-			if (typeof init.isSelfClosing !== "boolean") init.isSelfClosing = false
+				this.#tagName = init.tagName
 
-			this.#isSelfClosing = init.isSelfClosing
+				if (Object.prototype.toString.call(init.attributes) !== "[object Object]") init.attributes = {}
 
-			if (Array.isArray(init.children) && init.children.length) {
-				if (init.isSelfClosing) throw new Error("Self-closing nodes cannot have children")
+				for (const [key, val] of Object.entries(init.attributes))
+					if (typeof val !== "string" && typeof val !== "number" && typeof val !== "boolean")
+						throw new TypeError(`Expected init.attributes.${key} to be string|number|boolean`)
 
-				this.appendChild(init.children)
-			}
-		} else if (init.type === COMMENT) {
-			if (typeof init.value !== "string") init.value = ""
-			else init.value = init.value.trim()
+				this.#attributes = init.attributes
+				this.#children = []
 
-			const iv = init.value
-			const ivl = iv.length
+				if (typeof init.isSelfClosing !== "boolean") init.isSelfClosing = false
 
-			if (
-				ivl &&
-				(iv[0] !== "<" ||
-					iv[1] !== "!" ||
-					iv[2] !== "-" ||
-					iv[3] !== "-" ||
-					iv[ivl - 3] !== "-" ||
-					iv[ivl - 2] !== "-" ||
-					iv[ivl - 1] !== ">")
-			)
-				init.value = `<!--${init.value}-->`
+				this.#isSelfClosing = init.isSelfClosing
 
-			this.#value = init.value
-		} else if (init.type === TEXT) {
-			if (typeof init.value !== "string") init.value = ""
+				if (Array.isArray(init.children) && init.children.length) {
+					if (init.isSelfClosing) throw new Error("Self-closing nodes cannot have children")
 
-			this.#value = init.value
+					this.appendChild(init.children)
+				}
+
+				break
+			case CDATA:
+			case TEXT:
+				if (typeof init.value !== "string") init.value = ""
+
+				this.#value = init.value
+
+				break
+			default:
+				break
 		}
+	}
+
+	/**
+	 * Checks if the given value is a CDATA node.
+	 *
+	 * @param {unknown} value
+	 * @returns {boolean}
+	 */
+	static isCDATA(value) {
+		return value instanceof Node && value.type === CDATA
 	}
 
 	/**
