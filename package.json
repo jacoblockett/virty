@@ -1,5 +1,5 @@
 {
-	"version": "0.3.0",
+	"version": "0.3.1",
 	"description": "A class-based virtual DOM structure allowing for DOM manipulation in nodejs",
 	"main": "dist/index.cjs",
 	"module": "dist/index.mjs",
