@@ -1,5 +1,3 @@
-'use strict';
-
 // DESIGN NOTE: This library makes no attempt at validating the data it receives beyond ensuring it abides
 // by this api's ability to interpret the data. For instance, "<" is perfectly acceptable within a text node,
 // whereas in reality that's obviously disallowed. Validation is out of scope for this library and should be
@@ -848,7 +846,4 @@ class Node {
 	}
 }
 
-exports.COMMENT = COMMENT;
-exports.ELEMENT = ELEMENT;
-exports.Node = Node;
-exports.TEXT = TEXT;
+export { COMMENT, ELEMENT, Node, TEXT };
