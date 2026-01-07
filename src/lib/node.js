@@ -1195,7 +1195,7 @@ export default class Node {
 				if (xmlDeclarationStr) result.push(xmlDeclarationStr)
 				if (doctypeDeclarationStr) result.push(doctypeDeclarationStr)
 				if (node.children.length) {
-					const children = node.children.map(c => ({ node: c, depth: depth + 1 }))
+					const children = node.children.map(c => ({ node: c, depth }))
 
 					q.unshift(...children)
 				}
