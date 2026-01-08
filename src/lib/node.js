@@ -5,13 +5,13 @@ import { setNext, setParent, setPrevious } from "./keyMask.js"
 import { Document, Element, VoidElement, CDATA, ProcessingInstruction, Text, Comment } from "./nodeTypes.js"
 
 /**
- * @typedef {import('./nodeTypes.js').Document} Virty.Document
- * @typedef {import('./nodeTypes.js').Element} Virty.Element
- * @typedef {import('./nodeTypes.js').VoidElement} Virty.VoidElement
- * @typedef {import('./nodeTypes.js').CDATA} Virty.CDATA
- * @typedef {import('./nodeTypes.js').ProcessingInstruction} Virty.ProcessingInstruction
- * @typedef {import('./nodeTypes.js').Text} Virty.Text
- * @typedef {import('./nodeTypes.js').Comment} Virty.Comment
+ * @typedef {0} Virty.Document
+ * @typedef {1} Virty.Element
+ * @typedef {2} Virty.VoidElement
+ * @typedef {3} Virty.CDATA
+ * @typedef {4} Virty.ProcessingInstruction
+ * @typedef {5} Virty.Text
+ * @typedef {6} Virty.Comment
  */
 
 export default class Node {
@@ -32,8 +32,8 @@ export default class Node {
 	 * @param {XmlDeclaration} [init.xmlDeclaration] The XML declaration of the Document Node
 	 * @param {DoctypeDeclaration} [init.doctypeDeclaration] The Doctype declaration of the Document Node
 	 * @param {string} [init.name] The name of the Element, VoidElement, or ProcessingInstruction Node
-	 * @param {{[name: string]: string}} [init.attributes] Attributes to assign to the Element or VoidElement Node
-	 * @param {Node[]} [init.children] Children of the Document or Element Node
+	 * @param {object} [init.attributes] Attributes to assign to the Element or VoidElement Node
+	 * @param {Array<Node>} [init.children] Children of the Document or Element Node
 	 * @param {string} [init.value] Raw text data of the CDATA, ProcessingInstruction, Text, or Comment Node
 	 */
 	constructor(init) {
@@ -234,7 +234,7 @@ export default class Node {
 	/**
 	 * The attributes of this Node.
 	 *
-	 * @returns {{[name: string]: string|number|boolean}}
+	 * @returns {Object<string, string>}
 	 */
 	get attributes() {
 		return { ...this.#attributes }
@@ -292,7 +292,7 @@ export default class Node {
 	/**
 	 * The children of this Node.
 	 *
-	 * @returns {Node[]}
+	 * @returns {Array<Node>}
 	 */
 	get children() {
 		return this.#children
@@ -552,7 +552,7 @@ export default class Node {
 	 * overwritten.
 	 *
 	 * @param {string} name The attribute name
-	 * @param {string} [value] The attribute's value as a string
+	 * @param {string} [value] The attribute's value as a string (default: `"true"`)
 	 * @returns {Node} The instance for chaining
 	 */
 	addAttribute(name, value) {
@@ -573,7 +573,7 @@ export default class Node {
 	/**
 	 * Adds the given class name(s) to this Node's class attribute.
 	 *
-	 * @param {string|string[]} className The class name(s) to add
+	 * @param {string|Array<string>} className The class name(s) to add
 	 * @returns {Node} The instance for chaining
 	 */
 	addClass(className) {
@@ -587,7 +587,7 @@ export default class Node {
 			const c = className[i]
 
 			if (typeof c !== "string")
-				throw new TypeError(`Expected className to be one of string|string[], instead found ${typeof c}`)
+				throw new TypeError(`Expected className to be one of string|Array<string>, instead found ${typeof c}`)
 
 			split.push(c.trim())
 		}
@@ -601,7 +601,7 @@ export default class Node {
 	 * Appends the given Nodes as children to this Node.
 	 *
 	 * @note Appended children will lose all parent and sibling references.
-	 * @param {Node|Node[]} node The Node(s) to append
+	 * @param {Node|Array<Node>} node The Node(s) to append
 	 * @returns {Node} The instance for chaining
 	 */
 	appendChild(node) {
@@ -611,7 +611,7 @@ export default class Node {
 		let p = this.#children[this.#children.length - 1]
 
 		for (const c of node) {
-			if (!Node.isNode(c)) throw new TypeError(`Expected node to be one of Node|Node[], instead found ${typeof c}`)
+			if (!Node.isNode(c)) throw new TypeError(`Expected node to be one of Node|Array<Node>, instead found ${typeof c}`)
 			if (c.parent) c.parent.removeChild(c)
 
 			c[setParent](this)
@@ -632,7 +632,7 @@ export default class Node {
 	 * Appends the given Nodes as direct siblings to this Node.
 	 *
 	 * @note Appended siblings will lose all parent and sibling references.
-	 * @param {Node|Node[]} node The Node(s) to append
+	 * @param {Node|Array<Node>} node The Node(s) to append
 	 * @returns {Node} The instance for chaining
 	 */
 	appendSibling(node) {
@@ -653,7 +653,8 @@ export default class Node {
 		for (let i = 0; i < pc.length; i++) {
 			const c = pc[i]
 
-			if (!(c instanceof Node)) throw new TypeError(`Expected node to be one of Node|Node[], instead found ${typeof c}`)
+			if (!(c instanceof Node))
+				throw new TypeError(`Expected node to be one of Node|Array<Node>, instead found ${typeof c}`)
 
 			c[setParent](p)
 			c[setPrevious](pc[i - 1])
@@ -739,7 +740,7 @@ export default class Node {
 	 * Prepends the given Nodes as children to this Node.
 	 *
 	 * @note Prepended children will lose all parent and sibling references.
-	 * @param {Node|Node[]} node The Node(s) to prepend
+	 * @param {Node|Array<Node>} node The Node(s) to prepend
 	 * @returns {Node} The instance for chaining
 	 */
 	prependChild(node) {
@@ -749,7 +750,7 @@ export default class Node {
 		let p = this.#children[this.#children.length - 1]
 
 		for (const c of node) {
-			if (!Node.isNode(c)) throw new TypeError(`Expected node to be one of Node|Node[], instead found ${typeof c}`)
+			if (!Node.isNode(c)) throw new TypeError(`Expected node to be one of Node|Array<Node>, instead found ${typeof c}`)
 			if (c.parent) c.parent.removeChild(c)
 
 			c[setParent](this)
@@ -770,7 +771,7 @@ export default class Node {
 	 * Prepends the given Nodes as direct siblings to this Node.
 	 *
 	 * @note Prepended siblings will lose all parent and sibling references.
-	 * @param {Node|Node[]} node The Node(s) to prepend
+	 * @param {Node|Array<Node>} node The Node(s) to prepend
 	 * @returns {Node} The instance for chaining
 	 */
 	prependSibling(...node) {
@@ -791,7 +792,8 @@ export default class Node {
 		for (let i = 0; i < pc.length; i++) {
 			const c = pc[i]
 
-			if (!(c instanceof Node)) throw new TypeError(`Expected node to be one of Node|Node[], instead found ${typeof c}`)
+			if (!(c instanceof Node))
+				throw new TypeError(`Expected node to be one of Node|Array<Node>, instead found ${typeof c}`)
 
 			c[setParent](p)
 			c[setPrevious](pc[i - 1])
@@ -830,7 +832,7 @@ export default class Node {
 	/**
 	 * Removes the given Node(s) from this Node's children.
 	 *
-	 * @param {Node|Node[]} node The Node(s) to remove
+	 * @param {Node|Array<Node>} node The Node(s) to remove
 	 * @returns {Node} The instance for chaining
 	 */
 	removeChild(node) {
@@ -870,7 +872,7 @@ export default class Node {
 	/**
 	 * Removes the given class name(s) from this Node's class attribute.
 	 *
-	 * @param {string|string[]} className The class name(s) to remove
+	 * @param {string|Array<string>} className The class name(s) to remove
 	 * @returns {Node} The instance for chaining
 	 */
 	removeClass(className) {
@@ -881,7 +883,9 @@ export default class Node {
 
 		for (const classToRemove of className) {
 			if (typeof classToRemove !== "string")
-				throw new TypeError(`Expected className to be one of string|string[], instead found ${typeof classToRemove}`)
+				throw new TypeError(
+					`Expected className to be one of string|Array<string>, instead found ${typeof classToRemove}`
+				)
 
 			delete classHash[classToRemove.trim()]
 		}
@@ -941,7 +945,7 @@ export default class Node {
 	 * Sets this Node's attributes list to the given attributes.
 	 *
 	 * @note This method will overwrite all attributes currently assigned to this Node.
-	 * @param {{[name: string]: string}} attributes The name/value pairs to assign as attributes
+	 * @param {Object<string, string>} attributes The name/value pairs to assign as attributes
 	 * @returns {Node} The instance for chaining
 	 */
 	setAttributes(attributes) {
@@ -969,13 +973,13 @@ export default class Node {
 	 * Sets this Node's children to the given Nodes.
 	 *
 	 * @note This method will overwrite all children currently assigned to this Node.
-	 * @param {Node[]} children
+	 * @param {Array<Node>} children
 	 * @returns {Node} The instance for chaining
 	 */
 	setChildren(children) {
 		if (!this.canContainChildren) throw new Error(`Cannot use setChildren on ${this.#type} Node`)
 		if (!Array.isArray(children))
-			throw new TypeError(`Expected children to be a Node[], instead got ${typeof children}`)
+			throw new TypeError(`Expected children to be a Array<Node>, instead got ${typeof children}`)
 
 		this.removeChild(this.#children)
 		this.appendChild(children)
@@ -1113,7 +1117,7 @@ export default class Node {
 	/**
 	 * Toggles the given class name(s) on this Node's class attribute.
 	 *
-	 * @param {string|string[]} className The class name(s) to toggle
+	 * @param {string|Array<string>} className The class name(s) to toggle
 	 * @returns {Node} The instance for chaining
 	 */
 	toggleClass(className) {
@@ -1125,7 +1129,9 @@ export default class Node {
 
 		for (let classToToggle of className) {
 			if (typeof classToToggle !== "string")
-				throw new TypeError(`Expected className to be one of string|string[], instead found ${typeof classToToggle}`)
+				throw new TypeError(
+					`Expected className to be one of string|Array<string>, instead found ${typeof classToToggle}`
+				)
 
 			classToToggle = classToToggle.trim()
 

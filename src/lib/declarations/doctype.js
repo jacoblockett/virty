@@ -14,7 +14,7 @@ export default class DoctypeDeclaration {
 	 * @param {string} [init.element] The name of the root element of the document
 	 * @param {string} [init.formalPublicIdentifier] The FPI (Formal Public Identifier), or ID that corresponds to a key publicly available lookup table
 	 * @param {string} [init.systemIdentifier] The URI corresponding to the external DTD (Document Type Declaration) resource
-	 * @param {(AttListDeclaration|ElementDeclaration|EntityDeclaration)[]} [init.internalSubset] The internal subset of rules to use (overrides all identifiers)
+	 * @param {Array<(AttListDeclaration|ElementDeclaration|EntityDeclaration)>} [init.internalSubset] The internal subset of rules to use (overrides all identifiers)
 	 */
 	constructor(init) {
 		if (Object.prototype.toString.call(init) !== "[object Object]") init = {}
@@ -64,7 +64,7 @@ export default class DoctypeDeclaration {
 	/**
 	 * The Internal Subset of rules used in place of a separate DTD file or resource.
 	 *
-	 * @returns {(AttList|Element|Entity)[]}
+	 * @returns {Array<(AttListDeclaration|ElementDeclaration|EntityDeclaration)>}
 	 */
 	get internalSubset() {
 		return this.#internalSubset
@@ -119,7 +119,7 @@ export default class DoctypeDeclaration {
 	/**
 	 * Sets the Internal Subset of rules used in place of a separate DTD file or resource.
 	 *
-	 * @param {(AttListDeclaration|ElementDeclaration|EntityDeclaration)[]} subset
+	 * @param {Array<(AttListDeclaration|ElementDeclaration|EntityDeclaration)>} subset
 	 * @returns {DoctypeDeclaration} The instance for chaining
 	 */
 	setInternalSubset(subset) {
