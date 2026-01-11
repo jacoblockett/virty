@@ -14,7 +14,7 @@ npm i virty
 
 ## API Documentation
 
-Detailed documentation can be found [here](https://jacoblockett.github.io/virty/docs).
+Detailed documentation can be found [here](https://jacoblockett.github.io/virty).
 
 ## Quickstart
 
