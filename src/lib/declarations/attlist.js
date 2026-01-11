@@ -29,6 +29,9 @@ const DEFAULT_KEYWORDS_HASH = toHashTable(["required", "optional", "fixed", "def
  * @property {string} [defaultValue] Required for "fixed" and "default" types
  */
 
+/**
+ * @category Declarations
+ */
 export default class AttListDeclaration {
 	#element
 	#attributes = {}
@@ -49,7 +52,7 @@ export default class AttListDeclaration {
 	 * Checks if the given value is an AttListDeclaration.
 	 *
 	 * @param {unknown} value
-	 * @returns {boolean}
+	 * @return {boolean}
 	 */
 	static isAttListDeclaration(value) {
 		return value instanceof AttListDeclaration
@@ -58,7 +61,7 @@ export default class AttListDeclaration {
 	/**
 	 * The name of the element this AttListDeclaration is being declared upon.
 	 *
-	 * @returns {string|undefined}
+	 * @return {string|undefined}
 	 */
 	get element() {
 		return this.#element
@@ -67,7 +70,7 @@ export default class AttListDeclaration {
 	/**
 	 * The attributes declared for this AttListDeclaration.
 	 *
-	 * @returns {Attribute[]}
+	 * @return {Attribute[]}
 	 */
 	get attributes() {
 		return [...Object.values(this.#attributes)]
@@ -77,7 +80,7 @@ export default class AttListDeclaration {
 	 * Gets the specified attribute declared for this AttListDeclaration.
 	 *
 	 * @param {string} name
-	 * @returns {Attribute}
+	 * @return {Attribute}
 	 */
 	getAttribute(name) {
 		if (typeof name !== "string") throw new TypeError(`Expected name to be a string, instead got ${typeof name}`)
@@ -89,7 +92,7 @@ export default class AttListDeclaration {
 	 * Sets the name of the element this AttListDeclaration is being declared upon.
 	 *
 	 * @param {string} name
-	 * @returns {AttListDeclaration} The instance for chaining
+	 * @return {AttListDeclaration} The instance for chaining
 	 */
 	setElement(name) {
 		if (typeof name !== "string") throw new TypeError(`Expected name to be a string, instead got ${typeof name}`)
@@ -108,8 +111,8 @@ export default class AttListDeclaration {
 	 *
 	 * @note This method overwrites the any attributes already declared. Use `addAttribute` or `addAttributes`
 	 * to append to the list instead.
-	 * @param {Attribute[]}
-	 * @returns {AttListDeclaration} The instance for chaining
+	 * @param {Attribute[]} attributes
+	 * @return {AttListDeclaration} The instance for chaining
 	 */
 	setAttributes(attributes) {
 		if (!Array.isArray(attributes))
@@ -129,7 +132,7 @@ export default class AttListDeclaration {
 	 *
 	 * @note An attribute that shares a name with an already defined attribute will overwrite the original attribute.
 	 * @param {Attribute} attribute
-	 * @returns {AttListDeclaration} The instance for chaining
+	 * @return {AttListDeclaration} The instance for chaining
 	 */
 	addAttribute(attribute) {
 		if (Object.prototype.toString.call(attribute) !== "[object Object]")
@@ -226,7 +229,7 @@ export default class AttListDeclaration {
 	 *
 	 * @note An attribute that shares a name with an already defined attribute will overwrite the original attribute.
 	 * @param {Attribute[]} attributes
-	 * @returns {AttListDeclaration} The instance for chaining
+	 * @return {AttListDeclaration} The instance for chaining
 	 */
 	addAttributes(attributes) {
 		if (!Array.isArray(attributes))
@@ -242,7 +245,7 @@ export default class AttListDeclaration {
 	/**
 	 * Removes the name of the element this AttListDeclaration is being declared upon.
 	 *
-	 * @returns {AttListDeclaration} The instance for chaining
+	 * @return {AttListDeclaration} The instance for chaining
 	 */
 	removeElement() {
 		this.#element = undefined
@@ -255,7 +258,7 @@ export default class AttListDeclaration {
 	 * are specified, removes **all** the attributes.
 	 *
 	 * @param {string[]} names
-	 * @returns {AttListDeclaration} The instance for chaining
+	 * @return {AttListDeclaration} The instance for chaining
 	 */
 	removeAttributes(names) {
 		if (names !== undefined) {
@@ -277,7 +280,7 @@ export default class AttListDeclaration {
 	/**
 	 * Converts the AttListDeclaration into a String.
 	 *
-	 * @returns {string}
+	 * @return {string}
 	 */
 	toString() {
 		const element = this.#element ? ` ${this.#element}` : ""

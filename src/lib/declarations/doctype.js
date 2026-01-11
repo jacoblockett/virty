@@ -2,6 +2,9 @@ import AttListDeclaration from "./attlist.js"
 import ElementDeclaration from "./element.js"
 import EntityDeclaration from "./entity.js"
 
+/**
+ * @category Declarations
+ */
 export default class DoctypeDeclaration {
 	#element
 	#formalPublicIdentifier
@@ -28,7 +31,7 @@ export default class DoctypeDeclaration {
 	 * Checks if the given value is an DoctypeDeclaration.
 	 *
 	 * @param {unknown} value
-	 * @returns {boolean}
+	 * @return {boolean}
 	 */
 	static isDoctypeDeclaration(value) {
 		return value instanceof DoctypeDeclaration
@@ -37,7 +40,7 @@ export default class DoctypeDeclaration {
 	/**
 	 * The name of the root element of the document.
 	 *
-	 * @returns {string|undefined}
+	 * @return {string|undefined}
 	 */
 	get element() {
 		return this.#element
@@ -46,7 +49,7 @@ export default class DoctypeDeclaration {
 	/**
 	 * The Formal Public Identifier (FPI), or ID that corresponds to a key on a public lookup table.
 	 *
-	 * @returns {string|undefined}
+	 * @return {string|undefined}
 	 */
 	get formalPublicIdentifier() {
 		return this.#formalPublicIdentifier
@@ -55,7 +58,7 @@ export default class DoctypeDeclaration {
 	/**
 	 * The System Identifier URI, or storage location of the Document Type Declaration (DTD).
 	 *
-	 * @returns {string|undefined}
+	 * @return {string|undefined}
 	 */
 	get systemIdentifier() {
 		return this.#systemIdentifier
@@ -64,7 +67,7 @@ export default class DoctypeDeclaration {
 	/**
 	 * The Internal Subset of rules used in place of a separate DTD file or resource.
 	 *
-	 * @returns {Array<(AttListDeclaration|ElementDeclaration|EntityDeclaration)>}
+	 * @return {Array<(AttListDeclaration|ElementDeclaration|EntityDeclaration)>}
 	 */
 	get internalSubset() {
 		return this.#internalSubset
@@ -74,7 +77,7 @@ export default class DoctypeDeclaration {
 	 * Sets the name of the root element of the document.
 	 *
 	 * @param {string} name
-	 * @returns {DoctypeDeclaration} The instance for chaining
+	 * @return {DoctypeDeclaration} The instance for chaining
 	 */
 	setElement(name) {
 		if (typeof name !== "string") throw new TypeError(`Expected name to be a string, instead got ${typeof name}`)
@@ -92,7 +95,7 @@ export default class DoctypeDeclaration {
 	 * Sets the Formal Public Identifier (FPI), or ID that corresponds to a key on a public lookup table.
 	 *
 	 * @param {string} id
-	 * @returns {DoctypeDeclaration} The instance for chaining
+	 * @return {DoctypeDeclaration} The instance for chaining
 	 */
 	setFormalPublicIdentifier(id) {
 		if (typeof id !== "string") throw new TypeError(`Expected id to be a string, instead got ${typeof id}`)
@@ -106,7 +109,7 @@ export default class DoctypeDeclaration {
 	 * Sets the System Identifier URI, or storage location of the Document Type Declaration (DTD).
 	 *
 	 * @param {string} uri
-	 * @returns {DoctypeDeclaration} The instance for chaining
+	 * @return {DoctypeDeclaration} The instance for chaining
 	 */
 	setSystemIdentifier(uri) {
 		if (typeof uri !== "string") throw new TypeError(`Expected uri to be a string, instead got ${typeof uri}`)
@@ -120,7 +123,7 @@ export default class DoctypeDeclaration {
 	 * Sets the Internal Subset of rules used in place of a separate DTD file or resource.
 	 *
 	 * @param {Array<(AttListDeclaration|ElementDeclaration|EntityDeclaration)>} subset
-	 * @returns {DoctypeDeclaration} The instance for chaining
+	 * @return {DoctypeDeclaration} The instance for chaining
 	 */
 	setInternalSubset(subset) {
 		if (!Array.isArray(subset)) throw new TypeError(`Expected subset to be an array, instead got ${typeof subset}`)
@@ -145,7 +148,7 @@ export default class DoctypeDeclaration {
 	/**
 	 * Removes the name of the root element of the document.
 	 *
-	 * @returns {DoctypeDeclaration} The instance for chaining
+	 * @return {DoctypeDeclaration} The instance for chaining
 	 */
 	removeElement() {
 		this.#element = undefined
@@ -156,7 +159,7 @@ export default class DoctypeDeclaration {
 	/**
 	 * Removes the Formal Public Identifier (FPI), or ID that corresponds to a key on a public lookup table.
 	 *
-	 * @returns {DoctypeDeclaration} The instance for chaining
+	 * @return {DoctypeDeclaration} The instance for chaining
 	 */
 	removeFormalPublicIdentifier() {
 		this.#formalPublicIdentifier = undefined
@@ -167,7 +170,7 @@ export default class DoctypeDeclaration {
 	/**
 	 * Removes the System Identifier URI, or storage location of the Document Type Declaration (DTD).
 	 *
-	 * @returns {DoctypeDeclaration} The instance for chaining
+	 * @return {DoctypeDeclaration} The instance for chaining
 	 */
 	removeSystemIdentifier() {
 		this.#systemIdentifier = undefined
@@ -178,7 +181,7 @@ export default class DoctypeDeclaration {
 	/**
 	 * Removes the Internal Subset of rules used in place of a separate DTD file or resource.
 	 *
-	 * @returns {DoctypeDeclaration} The instance for chaining
+	 * @return {DoctypeDeclaration} The instance for chaining
 	 */
 	removeInternalSubset() {
 		this.#internalSubset = undefined
@@ -189,7 +192,7 @@ export default class DoctypeDeclaration {
 	/**
 	 * Converts the DoctypeDeclaration into a String.
 	 *
-	 * @returns {string}
+	 * @return {string}
 	 */
 	toString() {
 		const element = this.#element ? ` ${this.#element}` : ""

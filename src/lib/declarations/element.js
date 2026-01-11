@@ -1,3 +1,6 @@
+/**
+ * @category Declarations
+ */
 export default class ElementDeclaration {
 	#name
 	#rules
@@ -18,7 +21,7 @@ export default class ElementDeclaration {
 	 * Checks if the given value is an ElementDeclaration.
 	 *
 	 * @param {unknown} value
-	 * @returns {boolean}
+	 * @return {boolean}
 	 */
 	static isElementDeclaration(value) {
 		return value instanceof ElementDeclaration
@@ -27,7 +30,7 @@ export default class ElementDeclaration {
 	/**
 	 * The name of the ElementDeclaration.
 	 *
-	 * @returns {string|undefined}
+	 * @return {string|undefined}
 	 */
 	get name() {
 		return this.#name
@@ -36,7 +39,7 @@ export default class ElementDeclaration {
 	/**
 	 * The content rules of the ElementDeclaration.
 	 *
-	 * @returns {string|undefined}
+	 * @return {string|undefined}
 	 */
 	get rules() {
 		return this.#rules
@@ -46,7 +49,7 @@ export default class ElementDeclaration {
 	 * Sets the name of the ElementDeclaration.
 	 *
 	 * @param {string} name
-	 * @returns {ElementDeclaration} The instance for chaining
+	 * @return {ElementDeclaration} The instance for chaining
 	 */
 	setName(name) {
 		if (typeof name !== "string") throw new TypeError(`Expected name to be a string, instead got ${typeof name}`)
@@ -64,7 +67,7 @@ export default class ElementDeclaration {
 	 * Sets the content rules of the ElementDeclaration.
 	 *
 	 * @param {string} rules
-	 * @returns {ElementDeclaration} The instance for chaining
+	 * @return {ElementDeclaration} The instance for chaining
 	 */
 	setRules(rules) {
 		if (typeof rules !== "string") throw new TypeError(`Expected rules to be a string, instead got ${typeof rules}`)
@@ -81,7 +84,7 @@ export default class ElementDeclaration {
 	/**
 	 * Removes the name from the ElementDeclaration.
 	 *
-	 * @returns {ElementDeclaration} The instance for chaining
+	 * @return {ElementDeclaration} The instance for chaining
 	 */
 	removeName() {
 		this.#name = undefined
@@ -92,7 +95,7 @@ export default class ElementDeclaration {
 	/**
 	 * Removes the content rules from the ElementDeclaration.
 	 *
-	 * @returns {ElementDeclaration} The instance for chaining
+	 * @return {ElementDeclaration} The instance for chaining
 	 */
 	removeRules() {
 		this.#rules = undefined
@@ -103,7 +106,7 @@ export default class ElementDeclaration {
 	/**
 	 * Converts the ElementDeclaration declaration to a String.
 	 *
-	 * @returns {string}
+	 * @return {string}
 	 */
 	toString() {
 		const name = this.#name ? ` ${this.#name}` : ""

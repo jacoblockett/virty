@@ -1,3 +1,6 @@
+/**
+ * @category Declarations
+ */
 export default class EntityDeclaration {
 	#isParameterEntityDeclaration = false
 	#name
@@ -30,7 +33,7 @@ export default class EntityDeclaration {
 	 * Checks if the given value is an EntityDeclaration.
 	 *
 	 * @param {unknown} value
-	 * @returns {boolean}
+	 * @return {boolean}
 	 */
 	static isEntityDeclaration(value) {
 		return value instanceof EntityDeclaration
@@ -39,7 +42,7 @@ export default class EntityDeclaration {
 	/**
 	 * Whether or not the EntityDeclaration is a Parameter EntityDeclaration.
 	 *
-	 * @returns {boolean}
+	 * @return {boolean}
 	 */
 	get isParameterEntityDeclaration() {
 		return this.#isParameterEntityDeclaration
@@ -48,7 +51,7 @@ export default class EntityDeclaration {
 	/**
 	 * The name of the EntityDeclaration.
 	 *
-	 * @returns {string|undefined}
+	 * @return {string|undefined}
 	 */
 	get name() {
 		return this.#name
@@ -57,7 +60,7 @@ export default class EntityDeclaration {
 	/**
 	 * The PUBLIC Identifier of the EntityDeclaration.
 	 *
-	 * @returns {string|undefined}
+	 * @return {string|undefined}
 	 */
 	get publicID() {
 		return this.#publicID
@@ -66,7 +69,7 @@ export default class EntityDeclaration {
 	/**
 	 * The SYSTEM URI of the EntityDeclaration.
 	 *
-	 * @returns {string|undefined}
+	 * @return {string|undefined}
 	 */
 	get systemURI() {
 		return this.#systemURI
@@ -75,7 +78,7 @@ export default class EntityDeclaration {
 	/**
 	 * The value of the EntityDeclaration.
 	 *
-	 * @returns {string|undefined}
+	 * @return {string|undefined}
 	 */
 	get value() {
 		return this.#value
@@ -84,7 +87,7 @@ export default class EntityDeclaration {
 	/**
 	 * The NDATA name corresponding to a Notation declaration used with the EntityDeclaration.
 	 *
-	 * @returns {string|undefined}
+	 * @return {string|undefined}
 	 */
 	get ndata() {
 		return this.#ndata
@@ -93,7 +96,7 @@ export default class EntityDeclaration {
 	/**
 	 * Checks if the EntityDeclaration is Internal.
 	 *
-	 * @returns {boolean}
+	 * @return {boolean}
 	 */
 	get isInternal() {
 		return !this.#publicID && !this.#systemURI
@@ -102,7 +105,7 @@ export default class EntityDeclaration {
 	/**
 	 * Checks if the EntityDeclaration is External.
 	 *
-	 * @returns {boolean}
+	 * @return {boolean}
 	 */
 	get isExternal() {
 		return this.#publicID || this.#systemURI
@@ -112,7 +115,7 @@ export default class EntityDeclaration {
 	 * Sets whether the entity is a Parameter EntityDeclaration or not.
 	 *
 	 * @param {boolean} bool
-	 * @returns {EntityDeclaration} The instance for chaining
+	 * @return {EntityDeclaration} The instance for chaining
 	 */
 	setIsParameterEntityDeclaration(bool) {
 		if (typeof bool !== "boolean") throw new TypeError(`Expected bool to be a boolean, instead got ${typeof bool}`)
@@ -126,7 +129,7 @@ export default class EntityDeclaration {
 	 * Sets the name of the EntityDeclaration.
 	 *
 	 * @param {string} name
-	 * @returns {EntityDeclaration} The instance for chaining
+	 * @return {EntityDeclaration} The instance for chaining
 	 */
 	setName(name) {
 		if (typeof name !== "string") throw new TypeError(`Expected name to be a string, instead got ${typeof name}`)
@@ -146,7 +149,7 @@ export default class EntityDeclaration {
 	 *
 	 * @param {string} publicID
 	 * @param {string} [systemURI]
-	 * @returns {EntityDeclaration} The instance for chaining
+	 * @return {EntityDeclaration} The instance for chaining
 	 */
 	setPublicID(publicID, systemURI) {
 		if (typeof publicID !== "string")
@@ -168,7 +171,7 @@ export default class EntityDeclaration {
 	 * Sets the SYSTEM URI of the EntityDeclaration.
 	 *
 	 * @param {string} systemURI
-	 * @returns {EntityDeclaration} The instance for chaining
+	 * @return {EntityDeclaration} The instance for chaining
 	 */
 	setSystemURI(systemURI) {
 		if (typeof systemURI !== "string")
@@ -183,7 +186,7 @@ export default class EntityDeclaration {
 	 * Sets the NDATA of the EntityDeclaration.
 	 *
 	 * @param {string} ndata
-	 * @returns {EntityDeclaration} The instance for chaining
+	 * @return {EntityDeclaration} The instance for chaining
 	 */
 	setNDATA(ndata) {
 		if (typeof ndata !== "string") throw new TypeError(`Expected ndata to be a string, instead got ${typeof ndata}`)
@@ -201,7 +204,7 @@ export default class EntityDeclaration {
 	 * Sets the value of the EntityDeclaration.
 	 *
 	 * @param {string} value
-	 * @returns {EntityDeclaration} The instance for chaining
+	 * @return {EntityDeclaration} The instance for chaining
 	 */
 	setValue(value) {
 		if (typeof value !== "string") throw new TypeError(`Expected value to be a string, instead got ${typeof value}`)
@@ -214,7 +217,7 @@ export default class EntityDeclaration {
 	/**
 	 * Removes the name of the EntityDeclaration.
 	 *
-	 * @returns {EntityDeclaration} The instance for chaining
+	 * @return {EntityDeclaration} The instance for chaining
 	 */
 	removeName() {
 		this.#name = undefined
@@ -225,7 +228,7 @@ export default class EntityDeclaration {
 	/**
 	 * Removes the PUBLIC Identifier of the EntityDeclaration.
 	 *
-	 * @returns {EntityDeclaration} The instance for chaining
+	 * @return {EntityDeclaration} The instance for chaining
 	 */
 	removePublicID() {
 		this.#publicID = undefined
@@ -236,7 +239,7 @@ export default class EntityDeclaration {
 	/**
 	 * Removes the SYSTEM URI of the EntityDeclaration.
 	 *
-	 * @returns {EntityDeclaration} The instance for chaining
+	 * @return {EntityDeclaration} The instance for chaining
 	 */
 	removeSystemURI() {
 		this.#systemURI = undefined
@@ -247,7 +250,7 @@ export default class EntityDeclaration {
 	/**
 	 * Removes the value of the EntityDeclaration.
 	 *
-	 * @returns {EntityDeclaration} The instance for chaining
+	 * @return {EntityDeclaration} The instance for chaining
 	 */
 	removeValue() {
 		this.#value = undefined
@@ -258,7 +261,7 @@ export default class EntityDeclaration {
 	/**
 	 * Removes the NDATA of the EntityDeclaration.
 	 *
-	 * @returns {EntityDeclaration} The instance for chaining
+	 * @return {EntityDeclaration} The instance for chaining
 	 */
 	removeNDATA() {
 		this.#ndata = undefined
@@ -269,7 +272,7 @@ export default class EntityDeclaration {
 	/**
 	 * Converts the EntityDeclaration declaration into a String.
 	 *
-	 * @returns {string}
+	 * @return {string}
 	 */
 	toString() {
 		const paramToken = this.#isParameterEntityDeclaration ? " %" : ""

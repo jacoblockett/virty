@@ -14,6 +14,9 @@ import { Document, Element, VoidElement, CDATA, ProcessingInstruction, Text, Com
  * @typedef {6} Virty.Comment
  */
 
+/**
+ * Creates a Virty Node.
+ */
 export default class Node {
 	#attributes = {}
 	#children = []
@@ -72,7 +75,7 @@ export default class Node {
 	 * Checks if the given value is a CDATA Node.
 	 *
 	 * @param {unknown} value
-	 * @returns {boolean}
+	 * @return {boolean}
 	 */
 	static isCDATA(value) {
 		return value instanceof Node && value.type === CDATA
@@ -85,7 +88,7 @@ export default class Node {
 	 * data Nodes (CDATA, Comment, ProcessingInstruction, Text)
 	 * @see `Node.isCDATA` Checks if the given value is a CDATA Node.
 	 * @param {unknown} value
-	 * @returns {boolean}
+	 * @return {boolean}
 	 */
 	static isCharacterData(value) {
 		const characterDataNodeTypesMap = { 3: true, 4: true, 5: true, 6: true }
@@ -97,7 +100,7 @@ export default class Node {
 	 * Checks if the given value is a Comment Node.
 	 *
 	 * @param {unknown} value
-	 * @returns {boolean}
+	 * @return {boolean}
 	 */
 	static isComment(value) {
 		return value instanceof Node && value.type === Comment
@@ -107,7 +110,7 @@ export default class Node {
 	 * Checks if the given value is a Document Node.
 	 *
 	 * @param {unknown} value
-	 * @returns {boolean}
+	 * @return {boolean}
 	 */
 	static isDocument(value) {
 		return value instanceof Node && value.type === Document
@@ -120,7 +123,7 @@ export default class Node {
 	 * @see `isNonVoidElement` Checks if the given value is a non-void Element Node
 	 * @see `isVoidElement` Checks if the given value is a VoidElement Node.
 	 * @param {unknown} value
-	 * @returns {boolean}
+	 * @return {boolean}
 	 */
 	static isElement(value) {
 		return value instanceof Node && (value.type === Element || value.type === VoidElement)
@@ -130,7 +133,7 @@ export default class Node {
 	 * Checks if the given value is a Node.
 	 *
 	 * @param {unknown} value
-	 * @returns {boolean}
+	 * @return {boolean}
 	 */
 	static isNode(value) {
 		return value instanceof Node
@@ -140,7 +143,7 @@ export default class Node {
 	 * Checks if the given value is a non-void Element Node.
 	 *
 	 * @param {unknown} value
-	 * @returns {boolean}
+	 * @return {boolean}
 	 */
 	static isNonVoidElement(value) {
 		return value instanceof Node && value.type === Element
@@ -150,7 +153,7 @@ export default class Node {
 	 * Checks if the given value is a ProcessingInstruction Node.
 	 *
 	 * @param {unknown} value
-	 * @returns {boolean}
+	 * @return {boolean}
 	 */
 	static isProcessingInstruction(value) {
 		return value instanceof Node && value.type === ProcessingInstruction
@@ -160,7 +163,7 @@ export default class Node {
 	 * Checks if the given value is a Text Node.
 	 *
 	 * @param {unknown} value
-	 * @returns {boolean}
+	 * @return {boolean}
 	 */
 	static isText(value) {
 		return value instanceof Node && value.type === Text
@@ -170,7 +173,7 @@ export default class Node {
 	 * Checks if the given value is a VoidElement Node.
 	 *
 	 * @param {unknown} value
-	 * @returns {boolean}
+	 * @return {boolean}
 	 */
 	static isVoidElement(value) {
 		return value instanceof Node && value.type === VoidElement
@@ -183,8 +186,9 @@ export default class Node {
 	 *
 	 * @note This method assumes no responsibility of updating any affected siblings.
 	 * @protected
+	 * @ignore
 	 * @param {Node|undefined}
-	 * @returns {void}
+	 * @return {void}
 	 */
 	[setNext](node) {
 		if (node !== undefined && !Node.isNode(node))
@@ -200,8 +204,9 @@ export default class Node {
 	 *
 	 * @note This method assumes no responsibility of updating any affected parents/children.
 	 * @protected
+	 * @ignore
 	 * @param {Node|undefined}
-	 * @returns {void}
+	 * @return {void}
 	 */
 	[setParent](node) {
 		if (node !== undefined) {
@@ -221,8 +226,9 @@ export default class Node {
 	 *
 	 * @note This method assumes no responsibility of updating any affected siblings.
 	 * @protected
+	 * @ignore
 	 * @param {Node|undefined}
-	 * @returns {void}
+	 * @return {void}
 	 */
 	[setPrevious](node) {
 		if (node !== undefined && !Node.isNode(node))
@@ -234,7 +240,7 @@ export default class Node {
 	/**
 	 * The attributes of this Node.
 	 *
-	 * @returns {Object<string, string>}
+	 * @return {{[attributeName: string]: [attributeValue: string]}>}
 	 */
 	get attributes() {
 		return { ...this.#attributes }
@@ -244,7 +250,7 @@ export default class Node {
 	 * Checks if this Node is allowed to contain children.
 	 *
 	 * @note Nodes allowed children are Document and Element.
-	 * @returns {boolean}
+	 * @return {boolean}
 	 */
 	get canContainChildren() {
 		return this.#type === Document || this.#type === Element
@@ -256,7 +262,7 @@ export default class Node {
 	 * @note Character data Nodes constitute CDATA, Comment, ProcessingInstruction, and Text Nodes.
 	 * @note (HTML) Semantically invisible Text Nodes will also be rendered within the resulting string.
 	 * @see `text` Concatenates and returns all text content from Text Nodes within this Node and its descendants.
-	 * @returns {string}
+	 * @return {string}
 	 */
 	get characterData() {
 		if (Node.isCharacterData(this)) return this.#value
@@ -292,7 +298,7 @@ export default class Node {
 	/**
 	 * The children of this Node.
 	 *
-	 * @returns {Array<Node>}
+	 * @return {Array<Node>}
 	 */
 	get children() {
 		return this.#children
@@ -301,7 +307,7 @@ export default class Node {
 	/**
 	 * The DOCTYPE declaration of this Node.
 	 *
-	 * @returns {DoctypeDeclaration|undefined}
+	 * @return {DoctypeDeclaration|undefined}
 	 */
 	get doctypeDeclaration() {
 		return this.#doctypeDeclaration
@@ -310,7 +316,7 @@ export default class Node {
 	/**
 	 * The first child of this Node.
 	 *
-	 * @returns {Node|undefined}
+	 * @return {Node|undefined}
 	 */
 	get firstChild() {
 		return this.#children[0]
@@ -319,7 +325,7 @@ export default class Node {
 	/**
 	 * Checks if this Node is a child of another Node.
 	 *
-	 * @returns {boolean}
+	 * @return {boolean}
 	 */
 	get isChild() {
 		return !!this.#parent
@@ -328,7 +334,7 @@ export default class Node {
 	/**
 	 * Checks if this Node is the first child of another Node.
 	 *
-	 * @returns {boolean}
+	 * @return {boolean}
 	 */
 	get isFirstChild() {
 		return this.#parent?.firstChild === this
@@ -337,7 +343,7 @@ export default class Node {
 	/**
 	 * Checks if this Node is a grandchild to another Node.
 	 *
-	 * @returns {boolean}
+	 * @return {boolean}
 	 */
 	get isGrandchild() {
 		return !!this.#parent?.parent
@@ -346,7 +352,7 @@ export default class Node {
 	/**
 	 * Checks if this Node is a grandparent to another Node.
 	 *
-	 * @returns {boolean}
+	 * @return {boolean}
 	 */
 	get isGrandparent() {
 		if (!this.#children.length) return false
@@ -362,7 +368,7 @@ export default class Node {
 	/**
 	 * Checks if this Node is the last child of another Node.
 	 *
-	 * @returns {boolean}
+	 * @return {boolean}
 	 */
 	get isLastChild() {
 		return this.#parent?.lastChild === this
@@ -371,7 +377,7 @@ export default class Node {
 	/**
 	 * Checks if this Node is the only child of another Node.
 	 *
-	 * @returns {boolean}
+	 * @return {boolean}
 	 */
 	get isOnlyChild() {
 		return this.#parent?.children?.length === 1
@@ -380,7 +386,7 @@ export default class Node {
 	/**
 	 * Checks if this Node is a parent to another Node.
 	 *
-	 * @returns {boolean}
+	 * @return {boolean}
 	 */
 	get isParent() {
 		return !!this.#children.length
@@ -389,7 +395,7 @@ export default class Node {
 	/**
 	 * Checks if this Node is a sibling of another Node.
 	 *
-	 * @returns {boolean}
+	 * @return {boolean}
 	 */
 	get isSibling() {
 		return this.#parent?.children?.length > 1
@@ -398,7 +404,7 @@ export default class Node {
 	/**
 	 * The next sibling after this Node.
 	 *
-	 * @returns {Node|undefined}
+	 * @return {Node|undefined}
 	 */
 	get next() {
 		return this.#next
@@ -407,7 +413,7 @@ export default class Node {
 	/**
 	 * The first child Node of this Node's parent Node.
 	 *
-	 * @returns {Node|undefined}
+	 * @return {Node|undefined}
 	 */
 	get oldestSibling() {
 		return this.#parent?.firstChild
@@ -416,7 +422,7 @@ export default class Node {
 	/**
 	 * The parent to this Node.
 	 *
-	 * @returns {Node|undefined}
+	 * @return {Node|undefined}
 	 */
 	get parent() {
 		return this.#parent
@@ -425,7 +431,7 @@ export default class Node {
 	/**
 	 * The previous sibling before this Node.
 	 *
-	 * @returns {Node|undefined}
+	 * @return {Node|undefined}
 	 */
 	get previous() {
 		return this.#previous
@@ -434,7 +440,7 @@ export default class Node {
 	/**
 	 * The last child of this Node.
 	 *
-	 * @returns {Node|undefined}
+	 * @return {Node|undefined}
 	 */
 	get lastChild() {
 		return this.#children[this.children.length - 1]
@@ -443,7 +449,7 @@ export default class Node {
 	/**
 	 * The root, or highest ancestor of this Node.
 	 *
-	 * @returns {Node}
+	 * @return {Node}
 	 */
 	get root() {
 		let n = this
@@ -457,7 +463,7 @@ export default class Node {
 	/**
 	 * The name of this Node.
 	 *
-	 * @returns {string}
+	 * @return {string}
 	 */
 	get name() {
 		return this.#name
@@ -469,7 +475,7 @@ export default class Node {
 	 * @note This retrieves only Text Node content and ignores all other Nodes.
 	 * @note (HTML) Semantically invisible Text Nodes will also be rendered within the resulting string.
 	 * @see `characterData` Gets text from all character data nodes (Comment, CDATA, ProcessingInstruction, Text)
-	 * @returns {string}
+	 * @return {string}
 	 */
 	get text() {
 		if (this.#type === Text) return this.#value
@@ -505,7 +511,7 @@ export default class Node {
 	/**
 	 * The type of this Node.
 	 *
-	 * @returns {Virty.Document|Virty.Element|Virty.VoidElement|Virty.CDATA|Virty.ProcessingInstruction|Virty.Text|Virty.Comment}
+	 * @return {Virty.Document|Virty.Element|Virty.VoidElement|Virty.CDATA|Virty.ProcessingInstruction|Virty.Text|Virty.Comment}
 	 */
 	get type() {
 		return this.#type
@@ -514,7 +520,7 @@ export default class Node {
 	/**
 	 * The type of this Node as text.
 	 *
-	 * @returns {"Document"|"Element"|"VoidElement"|"CDATA"|"ProcessingInstruction"|"Text"|"Comment"}
+	 * @return {"Document"|"Element"|"VoidElement"|"CDATA"|"ProcessingInstruction"|"Text"|"Comment"}
 	 */
 	get typeText() {
 		return ["Document", "Element", "VoidElement", "CDATA", "ProcessingInstruction", "Text", "Comment"][this.#type]
@@ -523,7 +529,7 @@ export default class Node {
 	/**
 	 * The raw character data value of this Node.
 	 *
-	 * @returns {string}
+	 * @return {string}
 	 */
 	get value() {
 		return this.#value
@@ -532,7 +538,7 @@ export default class Node {
 	/**
 	 * The XML declaration of this Node.
 	 *
-	 * @returns {XmlDeclaration|undefined}
+	 * @return {XmlDeclaration|undefined}
 	 */
 	get xmlDeclaration() {
 		return this.#xmlDeclaration
@@ -541,7 +547,7 @@ export default class Node {
 	/**
 	 * The last child Node of this Node's parent Node.
 	 *
-	 * @returns {Node|undefined}
+	 * @return {Node|undefined}
 	 */
 	get youngestSibling() {
 		return this.#parent?.lastChild
@@ -553,7 +559,7 @@ export default class Node {
 	 *
 	 * @param {string} name The attribute name
 	 * @param {string} [value] The attribute's value as a string (default: `"true"`)
-	 * @returns {Node} The instance for chaining
+	 * @return {Node} The instance for chaining
 	 */
 	addAttribute(name, value) {
 		if (!Node.isElement(this)) throw new Error(`Cannot use addAttribute on ${this.typeText} Node`)
@@ -574,7 +580,7 @@ export default class Node {
 	 * Adds the given class name(s) to this Node's class attribute.
 	 *
 	 * @param {string|Array<string>} className The class name(s) to add
-	 * @returns {Node} The instance for chaining
+	 * @return {Node} The instance for chaining
 	 */
 	addClass(className) {
 		if (!Node.isElement(this)) throw new Error(`Cannot use addClass on ${this.typeText} Node`)
@@ -602,7 +608,7 @@ export default class Node {
 	 *
 	 * @note Appended children will lose all parent and sibling references.
 	 * @param {Node|Array<Node>} node The Node(s) to append
-	 * @returns {Node} The instance for chaining
+	 * @return {Node} The instance for chaining
 	 */
 	appendChild(node) {
 		if (!this.canContainChildren) throw new Error(`Cannot use appendChild on ${this.typeText} Node`)
@@ -633,7 +639,7 @@ export default class Node {
 	 *
 	 * @note Appended siblings will lose all parent and sibling references.
 	 * @param {Node|Array<Node>} node The Node(s) to append
-	 * @returns {Node} The instance for chaining
+	 * @return {Node} The instance for chaining
 	 */
 	appendSibling(node) {
 		if (Node.isDocument(this)) throw new Error(`Cannot use appendSibling on Document Node`)
@@ -669,7 +675,7 @@ export default class Node {
 	 *
 	 * @alias `emancipate`
 	 * @note I just couldn't resist the tempation...
-	 * @returns {Node} The instance for chaining
+	 * @return {Node} The instance for chaining
 	 */
 	batman() {
 		this.#parent?.removeChild(this)
@@ -680,7 +686,7 @@ export default class Node {
 	/**
 	 * Removes this Node from its parent's list of child Nodes.
 	 *
-	 * @returns {Node} The instance for chaining
+	 * @return {Node} The instance for chaining
 	 */
 	emancipate() {
 		this.#parent?.removeChild(this)
@@ -692,7 +698,7 @@ export default class Node {
 	 * Checks if an attribute with the given name exists on this Node's attribute list.
 	 *
 	 * @param {string} name
-	 * @returns {boolean}
+	 * @return {boolean}
 	 */
 	hasAttribute(name) {
 		return Object.hasOwn(this.#attributes, name)
@@ -702,7 +708,7 @@ export default class Node {
 	 * Checks if this Node is a child of the given Node.
 	 *
 	 * @param {Node} node
-	 * @returns {boolean}
+	 * @return {boolean}
 	 */
 	isChildOf(node) {
 		return this.#parent === node
@@ -712,7 +718,7 @@ export default class Node {
 	 * Checks if this Node is a parent to the given Node.
 	 *
 	 * @param {Node} node
-	 * @returns {boolean}
+	 * @return {boolean}
 	 */
 	isParentOf(node) {
 		return this.#children.includes(node)
@@ -724,7 +730,7 @@ export default class Node {
 	 * @note Children are indexed by 1, not by 0.
 	 * @note Negative numbers will work from the last child to the first.
 	 * @param {number} n The 1-based index of the child Node to get
-	 * @returns {Node|undefined}
+	 * @return {Node|undefined}
 	 */
 	nthChild(n) {
 		if (!!this.#children.length) return undefined
@@ -741,7 +747,7 @@ export default class Node {
 	 *
 	 * @note Prepended children will lose all parent and sibling references.
 	 * @param {Node|Array<Node>} node The Node(s) to prepend
-	 * @returns {Node} The instance for chaining
+	 * @return {Node} The instance for chaining
 	 */
 	prependChild(node) {
 		if (!this.canContainChildren) throw new Error(`Cannot use prependChild on ${this.typeText} Node`)
@@ -772,7 +778,7 @@ export default class Node {
 	 *
 	 * @note Prepended siblings will lose all parent and sibling references.
 	 * @param {Node|Array<Node>} node The Node(s) to prepend
-	 * @returns {Node} The instance for chaining
+	 * @return {Node} The instance for chaining
 	 */
 	prependSibling(...node) {
 		if (Node.isDocument(this)) throw new Error(`Cannot use prependSibling on Document Node`)
@@ -807,7 +813,7 @@ export default class Node {
 	 * Removes the attribute corresponding to the given name from this Node's attribute list.
 	 *
 	 * @param {string} name The attribute name to remove
-	 * @returns {Node} The instance for chaining
+	 * @return {Node} The instance for chaining
 	 */
 	removeAttribute(name) {
 		if (!Node.isElement(this)) return this
@@ -821,7 +827,7 @@ export default class Node {
 	/**
 	 * Removes all attributes from this Node's attribute list.
 	 *
-	 * @returns {Node} The instance for chaining
+	 * @return {Node} The instance for chaining
 	 */
 	removeAttributes() {
 		this.#attributes = {}
@@ -833,7 +839,7 @@ export default class Node {
 	 * Removes the given Node(s) from this Node's children.
 	 *
 	 * @param {Node|Array<Node>} node The Node(s) to remove
-	 * @returns {Node} The instance for chaining
+	 * @return {Node} The instance for chaining
 	 */
 	removeChild(node) {
 		if (!!this.#children.length) return this
@@ -863,7 +869,7 @@ export default class Node {
 	/**
 	 * Removes all child Nodes from this Node.
 	 *
-	 * @returns {Node} The instance for chaining
+	 * @return {Node} The instance for chaining
 	 */
 	removeChildren() {
 		return this.removeChild(this.#children)
@@ -873,7 +879,7 @@ export default class Node {
 	 * Removes the given class name(s) from this Node's class attribute.
 	 *
 	 * @param {string|Array<string>} className The class name(s) to remove
-	 * @returns {Node} The instance for chaining
+	 * @return {Node} The instance for chaining
 	 */
 	removeClass(className) {
 		if (!Array.isArray(className)) className = [className]
@@ -898,7 +904,7 @@ export default class Node {
 	/**
 	 * Removes this Node's DOCTYPE declaration.
 	 *
-	 * @returns {Node} The instance for chaining
+	 * @return {Node} The instance for chaining
 	 */
 	removeDoctypeDeclaration() {
 		this.#doctypeDeclaration = undefined
@@ -909,7 +915,7 @@ export default class Node {
 	/**
 	 * Removes this Node's name.
 	 *
-	 * @returns {Node} The instance for chaining
+	 * @return {Node} The instance for chaining
 	 */
 	removeName() {
 		if (this.#type === ProcessingInstruction) throw new Error(`Cannot use removeName on a ProcessingInstruction Node`)
@@ -922,7 +928,7 @@ export default class Node {
 	/**
 	 * Removes this Node's value.
 	 *
-	 * @returns {Node} The instance for chaining
+	 * @return {Node} The instance for chaining
 	 */
 	removeValue() {
 		this.#value = ""
@@ -933,7 +939,7 @@ export default class Node {
 	/**
 	 * Removes this Node's XML declaration.
 	 *
-	 * @returns {Node} The instance for chaining
+	 * @return {Node} The instance for chaining
 	 */
 	removeXmlDeclaration() {
 		this.#xmlDeclaration = undefined
@@ -945,8 +951,8 @@ export default class Node {
 	 * Sets this Node's attributes list to the given attributes.
 	 *
 	 * @note This method will overwrite all attributes currently assigned to this Node.
-	 * @param {Object<string, string>} attributes The name/value pairs to assign as attributes
-	 * @returns {Node} The instance for chaining
+	 * @param {{[attributeName: string]: [attributeValue: string]}} attributes The name/value pairs to assign as attributes
+	 * @return {Node} The instance for chaining
 	 */
 	setAttributes(attributes) {
 		if (!Node.isElement(this)) throw new Error(`Cannot use setAttributes on ${this.#type} Node`)
@@ -974,7 +980,7 @@ export default class Node {
 	 *
 	 * @note This method will overwrite all children currently assigned to this Node.
 	 * @param {Array<Node>} children
-	 * @returns {Node} The instance for chaining
+	 * @return {Node} The instance for chaining
 	 */
 	setChildren(children) {
 		if (!this.canContainChildren) throw new Error(`Cannot use setChildren on ${this.#type} Node`)
@@ -992,7 +998,7 @@ export default class Node {
 	 *
 	 * @note Only available to Document Nodes.
 	 * @param {DoctypeDeclaration} doctypeDeclaration
-	 * @returns {Node} The instance for chaining
+	 * @return {Node} The instance for chaining
 	 */
 	setDoctypeDeclaration(doctypeDeclaration) {
 		if (this.#type !== Document) throw new Error(`Cannot use setDoctypeDeclaration on ${this.typeText} Node`)
@@ -1010,7 +1016,7 @@ export default class Node {
 	 * Sets this Node's name.
 	 *
 	 * @param {string} name
-	 * @returns {Node} The instance for chaining
+	 * @return {Node} The instance for chaining
 	 */
 	setName(name) {
 		if (![Element, VoidElement, ProcessingInstruction].includes(this.#type))
@@ -1033,7 +1039,7 @@ export default class Node {
 	 * example, if it were previously an Element and was changed to a VoidElement, all of its children will be
 	 * removed.
 	 * @param {Virty.Document|Virty.Element|Virty.VoidElement|Virty.CDATA|Virty.ProcessingInstruction|Virty.Text|Virty.Comment} type
-	 * @returns {Node} The instance for chaining
+	 * @return {Node} The instance for chaining
 	 */
 	setType(type) {
 		this.#type = type
@@ -1087,7 +1093,7 @@ export default class Node {
 	 * Sets this Node's value.
 	 *
 	 * @param {string} value
-	 * @returns {Node} The instance of chaining
+	 * @return {Node} The instance of chaining
 	 */
 	setValue(value) {
 		if (!Node.isCharacterData(this)) throw new Error(`Cannot use setValue on ${this.#type} Node`)
@@ -1102,7 +1108,7 @@ export default class Node {
 	 * Sets this Node's XML Declaration.
 	 *
 	 * @param {XmlDeclaration} xmlDeclaration
-	 * @returns {Node} The instance for chaining
+	 * @return {Node} The instance for chaining
 	 */
 	setXmlDeclaration(xmlDeclaration) {
 		if (this.#type !== Document) throw new Error(`Cannot use setXmlDeclaration on ${this.typeText} Node`)
@@ -1118,7 +1124,7 @@ export default class Node {
 	 * Toggles the given class name(s) on this Node's class attribute.
 	 *
 	 * @param {string|Array<string>} className The class name(s) to toggle
-	 * @returns {Node} The instance for chaining
+	 * @return {Node} The instance for chaining
 	 */
 	toggleClass(className) {
 		if (!Node.isElement(this)) throw new Error(`Cannot use toggleClass on ${this.typeText} Node`)
@@ -1155,7 +1161,7 @@ export default class Node {
 	 * @param {number} [options.indentSize] The number of times to use the indentation character (default: `0`)
 	 * @param {boolean} [options.useNewLine] Whether to use a `\n` to separate each node (default: `true` when `indentChar` and `indentSize` are truthy, otherwise `false`)
 	 * @param {number} [options.printWidth] The maximum visual column size to print before wrapping to the next line (default: `100`) ⚠️ Planned, but not implemented
-	 * @returns {string}
+	 * @return {string}
 	 */
 	toString(options) {
 		if (Object.prototype.toString.call(options) !== "[object Object]") options = {}

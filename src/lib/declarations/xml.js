@@ -1,3 +1,6 @@
+/**
+ * @category Declarations
+ */
 export default class XmlDeclaration {
 	#version
 	#encoding
@@ -21,7 +24,7 @@ export default class XmlDeclaration {
 	 * Checks if the given value is an XmlDeclaration.
 	 *
 	 * @param {unknown} value
-	 * @returns {boolean}
+	 * @return {boolean}
 	 */
 	static isXmlDeclaration(value) {
 		return value instanceof XmlDeclaration
@@ -30,7 +33,7 @@ export default class XmlDeclaration {
 	/**
 	 * The version of the XML document.
 	 *
-	 * @returns {string|undefined}
+	 * @return {string|undefined}
 	 */
 	get version() {
 		return this.#version
@@ -39,7 +42,7 @@ export default class XmlDeclaration {
 	/**
 	 * The encoding used by the XML document.
 	 *
-	 * @returns {string|undefined}
+	 * @return {string|undefined}
 	 */
 	get encoding() {
 		return this.#encoding
@@ -48,7 +51,7 @@ export default class XmlDeclaration {
 	/**
 	 * Whether the XML document uses internal data only (`true`) or if it requires external data (`false`).
 	 *
-	 * @returns {boolean|undefined}
+	 * @return {boolean|undefined}
 	 */
 	get isStandalone() {
 		return this.#isStandalone
@@ -58,7 +61,7 @@ export default class XmlDeclaration {
 	 * Sets the version of the XML document.
 	 *
 	 * @param {string} version
-	 * @returns {XmlDeclaration} The instance for chaining
+	 * @return {XmlDeclaration} The instance for chaining
 	 */
 	setVersion(version) {
 		if (typeof version !== "string")
@@ -77,7 +80,7 @@ export default class XmlDeclaration {
 	 * Sets the encoding used by the XML document.
 	 *
 	 * @param {string} encoding
-	 * @returns {XmlDeclaration} The instance for chaining
+	 * @return {XmlDeclaration} The instance for chaining
 	 */
 	setEncoding(encoding) {
 		if (typeof encoding !== "string")
@@ -97,7 +100,7 @@ export default class XmlDeclaration {
 	 * Sets whether the XML document uses internal data only (`true`) or if it requires external data (`false`).
 	 *
 	 * @param {boolean} bool
-	 * @returns {XmlDeclaration} The instance for chaining
+	 * @return {XmlDeclaration} The instance for chaining
 	 */
 	setIsStandalone(bool) {
 		if (typeof bool !== "boolean") throw new TypeError(`Expected bool to be a boolean, instead got ${typeof bool}`)
@@ -110,7 +113,7 @@ export default class XmlDeclaration {
 	/**
 	 * Removes the XML document's version.
 	 *
-	 * @returns {XmlDeclaration} The instance for chaining
+	 * @return {XmlDeclaration} The instance for chaining
 	 */
 	removeVersion() {
 		this.#version = undefined
@@ -121,7 +124,7 @@ export default class XmlDeclaration {
 	/**
 	 * Removes the XML document's encoding.
 	 *
-	 * @returns {XmlDeclaration} The instance for chaining
+	 * @return {XmlDeclaration} The instance for chaining
 	 */
 	removeEncoding() {
 		this.#encoding = undefined
@@ -132,7 +135,7 @@ export default class XmlDeclaration {
 	/**
 	 * Removes the standalone value from the XML document.
 	 *
-	 * @returns {XmlDeclaration} The instance for chaining
+	 * @return {XmlDeclaration} The instance for chaining
 	 */
 	removeIsStandalone() {
 		this.#isStandalone = undefined
@@ -143,7 +146,7 @@ export default class XmlDeclaration {
 	/**
 	 * Converts the XML document to a String.
 	 *
-	 * @returns {string}
+	 * @return {string}
 	 */
 	toString() {
 		const version = this.#version ? ` version="${this.#version}"` : ""
