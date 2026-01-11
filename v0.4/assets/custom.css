@@ -1,0 +1,17 @@
+pre code {
+	tab-size: 2;
+	-moz-tab-size: 2;
+}
+
+.tsd-page-toolbar pre,
+.tsd-comment pre {
+	tab-size: 2;
+}
+
+.tsd-page-title {
+	display: none;
+}
+
+.tsd-navigation > a {
+	content: "Modules";
+}
