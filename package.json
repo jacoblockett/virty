@@ -1,6 +1,6 @@
 {
 	"version": "0.4.0",
-	"description": "A class-based virtual DOM structure allowing for DOM manipulation in nodejs",
+	"description": "A class-based virtual DOM for XML and HTML. Designed to be as simple and flexible as possible.",
 	"main": "dist/index.cjs",
 	"module": "dist/index.mjs",
 	"exports": {
@@ -10,7 +10,9 @@
 	"scripts": {
 		"dev": "clear && node dev/sandbox.js",
 		"test": "node --test test.js",
-		"build": "rollup -c"
+		"build:dist": "rollup -c",
+		"build:docs": "typedoc --options ./typedoc/typedoc.config.mjs",
+		"deploy": "gh-pages -d docs"
 	},
 	"keywords": [
 		"dom",
@@ -32,12 +34,15 @@
 		"README.md"
 	],
 	"dependencies": {
-		"alltheutils": "^0.2.1",
-		"string-width": "^7.2.0"
+		"alltheutils": "^0.2.1"
 	},
 	"devDependencies": {
 		"@rollup/plugin-commonjs": "^29.0.0",
 		"@rollup/plugin-node-resolve": "^16.0.3",
-		"rollup": "^4.53.2"
+		"@shipgirl/typedoc-plugin-versions": "^0.3.2",
+		"rollup": "^4.53.2",
+		"typedoc": "^0.28.15",
+		"typedoc-material-theme": "^1.4.1",
+		"typedoc-plugin-versions": "^0.2.4"
 	}
 }
